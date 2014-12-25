@@ -61,7 +61,7 @@ impl Face {
 }
 
 /// A single influence of a bone on a vertex.
-#[deriving(Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C)]
 pub struct VertexWeight {
     /// Index of the vertex which is influenced by the bone.
@@ -103,7 +103,8 @@ impl Bone {
 }
 
 /// Enumerates the types of geometric primitives supported by Assimp.
-#[deriving(Copy)]
+#[allow(unused_qualifications)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum PrimitiveType {
     /// A point primitive.

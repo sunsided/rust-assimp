@@ -7,6 +7,7 @@ use types::AiString;
 use ffi;
 
 /// Flags for checking how assimp was compiled
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C, u32)]
 pub enum CompileFlags {
     /// Assimp was compiled as a shared object (Windows: DLL)
@@ -150,7 +151,7 @@ pub fn get_supported_import_exts() -> String {
         ffi::aiGetExtensionList(&mut exts);
     }
     // Don't expect this to fail
-    exts.as_str().unwrap().into_string()
+    exts.as_str().unwrap().to_string()
 }
 
 /// Returns the set compile flags

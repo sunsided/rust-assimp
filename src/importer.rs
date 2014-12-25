@@ -157,15 +157,15 @@ fn decompose_property(property: Property) -> (&'static str, PropertyType) {
             ( "PP_ICL_PTCACHE_SIZE", PInt(a) ),
         // This properties take a list as an arguement
         Property::PP_RVC_FLAGS(list) => {
-            let result = list.iter().fold(0, |sum, &y| sum | y as u32);
+            let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
             ( "PP_RVC_FLAGS", PInt(result as int) )
         }
         Property::PP_SBP_REMOVE(list) => {
-            let result = list.iter().fold(0, |sum, &y| sum | y as u32);
+            let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
             ( "PP_SBP_REMOVE", PInt(result as int) )
         }
         Property::PP_TUV_EVALUATE(list) => {
-            let result = list.iter().fold(0, |sum, &y| sum | y as u32);
+            let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
             ( "PP_TUV_EVALUATE", PInt(result as int) )
         }
         Property::PP_FID_ANIM_ACCURACY(a) =>

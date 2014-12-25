@@ -44,7 +44,7 @@ use libc::{c_float};
 /// called `<camName>.Target`. However this is just additional information
 /// then the transformation tracks of the camera main node make the
 /// camera already look in the right direction.
-#[deriving(Show)]
+#[deriving(Copy, PartialEq, Show)]
 #[repr(C)]
 pub struct Camera {
     /// The name of the camera.

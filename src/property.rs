@@ -460,7 +460,7 @@ pub enum Property<'a> {
 }
 
 /// Options for the `Process::TransformUVCoords` post processing step
-#[deriving(Copy)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C, u32)]
 pub enum TransformUV {
     /// Scale UV coordinates
@@ -495,7 +495,7 @@ pub enum TransformUV {
 /// from the import using the `Propcess_RemoveComponent` step.
 ///
 /// See the documentation to `Process::RemoveComponent` for more details.
-#[deriving(Copy)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C, u32)]
 pub enum Component {
     /// Normal vectors

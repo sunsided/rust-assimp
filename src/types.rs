@@ -14,7 +14,7 @@ const MAXLEN : uint = 1024u;
 
 /// Boolean type used by assimp.
 #[doc(hidden)]
-#[deriving(Clone, PartialEq, Eq, Show)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum AiBool {
     /// Represents false
@@ -34,6 +34,7 @@ impl AiBool {
 }
 
 ///	Standard return type for some library functions.
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum Return {
     /// Indicates that a function was successful
@@ -51,7 +52,7 @@ pub enum Return {
 ///
 /// The components are the coefficients in the equation
 /// `ax + by + cz + d = 0`.
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Plane {
     /// x coefficient in the plane equation
@@ -65,7 +66,7 @@ pub struct Plane {
 }
 
 /// Represents a ray.
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Ray {
     /// Position of the ray
@@ -75,7 +76,7 @@ pub struct Ray {
 }
 
 /// Represents a color in Red-Green-Blue space.
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Color3D {
     /// Red component
@@ -87,7 +88,7 @@ pub struct Color3D {
 }
 
 /// Represents a color in Red-Green-Blue-Alpha space.
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Color4D {
     /// Red component
@@ -103,7 +104,7 @@ pub struct Color4D {
 /// Stores the memory requirements for different components.
 ///
 /// All sizes are in bytes. Returned by Scene::get_memory_info()
-#[deriving(Clone, PartialEq, Eq, Show)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub struct MemoryInfo {
     /// Storage allocated for texture data
@@ -148,6 +149,7 @@ pub struct MemoryInfo {
 ///
 /// The (binary) length of such a string is limited to MAXLEN characters
 /// (including the the terminating zero).
+#[deriving(Copy)]
 #[repr(C, packed)]
 pub struct AiString {
     /// Binary length of the string excluding the terminal 0. This is NOT the
@@ -207,8 +209,17 @@ impl PartialEq for AiString {
     }
 }
 
+impl Clone for AiString {
+    fn clone(&self) -> AiString {
+        AiString {
+            length: self.length,
+            data: self.data,
+        }
+    }
+}
+
 /// Represents a vector in 2 dimensional space.
-#[deriving(Clone, PartialEq, Show, Copy)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Vector2D {
     /// x component
@@ -295,7 +306,7 @@ impl Div<f32, Vector2D> for Vector2D {
 }
 
 /// Represents a vector in 3 dimensional space.
-#[deriving(Clone, PartialEq, Show, Copy)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Vector3D {
     /// x component
@@ -411,7 +422,7 @@ impl Div<f32, Vector3D> for Vector3D {
 
 /// Represents a quaternion.
 #[allow(missing_docs)]
-#[deriving(Clone, PartialEq, Show, Copy)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Quaternion {
     pub w: c_float,
@@ -546,7 +557,7 @@ impl Div<f32, Quaternion> for Quaternion {
 
 /// Represents a 3x3 matrix.
 #[allow(missing_docs)]
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Matrix3x3 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float,
@@ -580,11 +591,11 @@ impl Matrix3x3 {
 
     /// Returns the transpose of this matrix
     pub fn transpose(&self) -> Matrix3x3 {
-        let mut copy = self.clone();
+        let mut temp = self.clone();
         unsafe {
-            ffi::aiTransposeMatrix3(&mut copy)
+            ffi::aiTransposeMatrix3(&mut temp)
         }
-        copy
+        temp
     }
 
 }
@@ -601,7 +612,7 @@ impl Mul<Matrix3x3, Matrix3x3> for Matrix3x3 {
 
 /// Represents a 4x4 matrix.
 #[allow(missing_docs)]
-#[deriving(Clone, PartialEq, Show)]
+#[deriving(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Matrix4x4 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float, pub a4: c_float,
@@ -633,11 +644,11 @@ impl Matrix4x4 {
 
     /// Returns the transpose of this matrix
     pub fn transpose(&self) -> Matrix4x4 {
-        let mut copy = self.clone();
+        let mut temp = self.clone();
         unsafe {
-            ffi::aiTransposeMatrix4(&mut copy)
+            ffi::aiTransposeMatrix4(&mut temp)
         }
-        copy
+        temp
     }
 
     /// Compute the inverse of a 4x4 matrix
