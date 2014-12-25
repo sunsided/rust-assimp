@@ -1,10 +1,10 @@
 [package]
-name = "model"
+name = "skeletal"
 version = "0.0.1"
 authors = ["Jeremy Croft <jemcroft@gmail.com>"]
 
 [[bin]]
-name = "model"
+name = "skeletal"
 
 
 [dependencies.rust-assimp]

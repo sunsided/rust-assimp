@@ -558,7 +558,7 @@ fn main() {
     let mut window = Sdl2Window::new(
         shader_version::OpenGL::_3_2,
         WindowSettings {
-            title: "model".to_string(),
+            title: "Skeletal Animation".to_string(),
             size: [win_width, win_height],
             fullscreen: false,
             exit_on_esc: true,
