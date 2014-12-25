@@ -68,7 +68,7 @@ impl TextureStore {
                 height: h as u16,
                 depth: 1,
                 levels: 1,
-                kind: gfx::tex::Texture2D,
+                kind: gfx::tex::TextureKind::Texture2D,
                 format: gfx::tex::RGBA8,
             };
 
@@ -82,7 +82,7 @@ impl TextureStore {
 
             match path.filename_str() {
                 Some(fname) => {
-                    textures.insert(fname.into_string(), texture);
+                    textures.insert(fname.to_string(), texture);
                     println!("Loaded texture: {}", fname);
                 },
                 None => panic!("Couldn't create texture from image"),
@@ -154,7 +154,7 @@ struct Model<'a> {
 }
 
 #[inline(always)]
-fn lerp<S, T: Add<T,T> + Sub<T,T> + Mul<S,T>>(start: T, end: T, s: S) -> T {
+fn lerp<S, T: Add<T,T> + Sub<T,T> + Mul<S,T> + Copy>(start: T, end: T, s: S) -> T {
     return start + (end - start) * s;
 }
 
@@ -290,7 +290,7 @@ impl<'a> Model<'a> {
                 buf_slices.push(gfx::Slice {
                     start: ind[0],
                     end: ind[1],
-                    prim_type: gfx::TriangleList,
+                    prim_type: gfx::PrimitiveType::TriangleList,
                     // prim_type: gfx::LineStrip,
                     kind: gfx::SliceKind::Index32(ind_buf, 0 as u32),
                 });
@@ -477,7 +477,7 @@ impl<'a> Model<'a> {
                                       0,
                                       );
 
-        for &mut component in self.batches.iter() {
+        for ref mut component in self.batches.iter_mut() {
             component.shader_data.u_model_view_proj = transform;
             graphics.draw(&component.batch, &component.shader_data, frame);
         }
@@ -485,7 +485,7 @@ impl<'a> Model<'a> {
 
 }
 
-#[deriving(Show)]
+#[deriving(Copy, Show)]
 #[vertex_format]
 struct Vertex {
     #[as_float]
@@ -553,15 +553,10 @@ GLSL_150: b"
 "
 };
 
-#[start]
-fn start(argc: int, argv: *const *const u8) -> int {
-     std::rt::start(argc, argv, main)
-}
-
 fn main() {
     let (win_width, win_height) = (640, 480);
     let mut window = Sdl2Window::new(
-        shader_version::opengl::OpenGL_3_2,
+        shader_version::OpenGL::_3_2,
         WindowSettings {
             title: "model".to_string(),
             size: [win_width, win_height],
@@ -577,14 +572,14 @@ fn main() {
         std::mem::transmute(sdl2::video::gl_get_proc_address(s))
     });
     let frame = gfx::Frame::new(win_width as u16, win_height as u16);
-    let state = gfx::DrawState::new().depth(gfx::state::LessEqual, true);
+    let state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
 
     ai::log::add_log_stream(ai::log::Stdout);
 
     let _ = device.create_sampler(
         gfx::tex::SamplerInfo::new(
-            gfx::tex::Bilinear,
-            gfx::tex::Clamp
+            gfx::tex::FilterMethod::Bilinear,
+            gfx::tex::WrapMode::Clamp
         )
     );
 
