@@ -5,14 +5,14 @@ env:
   global:
     - secure: oQGDq5yg2sK5whSr9H1PnJH5DMvOPUElg8OPRZzby7kA40pISEt31zs/ifD3CO1NrSeB7w3ipyYCEtmyvA93YqPd+AR3HInu1sz0XB1Rmpugsi3wPmesV83QFfynee7EvyHnbi0K6ivw3RCjx9LTIKPs0xVnCv5H1Cc+w6bDWno=
 before_script:
-    - rustc -v
-    - cargo -V
+    - rustc --version
+    - cargo --version
 install:
     - sudo apt-get update -qq
     - sudo apt-get install libassimp-dev
 script:
-    - cargo build -v
-    - cargo doc -v
+    - cargo build
+    - cargo doc
 after_success:
     - cp -R target/doc doc
     - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
