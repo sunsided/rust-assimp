@@ -22,7 +22,7 @@ use util::{ptr_to_slice};
 
 
 /// Helper structure to represent a texel in a ARGB8888 format
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C, packed)]
 pub struct Texel {
     /// blue
@@ -72,7 +72,7 @@ pub struct Texture {
     /// extension is chosen (JPEG maps to 'jpg', not to 'jpeg').
     /// E.g. 'dds\\0', 'pcx\\0', 'jpg\\0'.  All characters are lower-case.
     /// The fourth character will always be '\\0'.
-    pub format_hint: [c_char, ..4],
+    pub format_hint: [c_char; 4],
 
     /// Data of the texture.
     ///
