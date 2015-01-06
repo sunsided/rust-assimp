@@ -1,13 +1,13 @@
 //! Defines functions to retrieve information about the version of assimp being used.
 
-use std::c_str::CString;
+use std::c_str::{CString,ToCStr};
 
 use types::AiBool::{AiTrue};
 use types::AiString;
 use ffi;
 
 /// Flags for checking how assimp was compiled
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C, u32)]
 pub enum CompileFlags {
     /// Assimp was compiled as a shared object (Windows: DLL)

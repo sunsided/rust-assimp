@@ -2,6 +2,7 @@
 
 // use libc::{c_char};
 // use std::c_str::CString;
+use std::c_str::ToCStr;
 use std::ptr;
 
 use types::AiBool;

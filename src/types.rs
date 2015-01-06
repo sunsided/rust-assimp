@@ -4,6 +4,7 @@ use std::str;
 use std::fmt;
 use libc::{c_float, size_t, c_uchar, c_uint};
 use std::num::Float;
+use std::ops::{Add, Div, Mul, Sub};
 
 use vecmath as m;
 
@@ -14,7 +15,7 @@ const MAXLEN : uint = 1024u;
 
 /// Boolean type used by assimp.
 #[doc(hidden)]
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum AiBool {
     /// Represents false
@@ -34,7 +35,7 @@ impl AiBool {
 }
 
 ///	Standard return type for some library functions.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum Return {
     /// Indicates that a function was successful
@@ -52,7 +53,7 @@ pub enum Return {
 ///
 /// The components are the coefficients in the equation
 /// `ax + by + cz + d = 0`.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Plane {
     /// x coefficient in the plane equation
@@ -66,7 +67,7 @@ pub struct Plane {
 }
 
 /// Represents a ray.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Ray {
     /// Position of the ray
@@ -76,7 +77,7 @@ pub struct Ray {
 }
 
 /// Represents a color in Red-Green-Blue space.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Color3D {
     /// Red component
@@ -88,7 +89,7 @@ pub struct Color3D {
 }
 
 /// Represents a color in Red-Green-Blue-Alpha space.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Color4D {
     /// Red component
@@ -104,7 +105,7 @@ pub struct Color4D {
 /// Stores the memory requirements for different components.
 ///
 /// All sizes are in bytes. Returned by Scene::get_memory_info()
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub struct MemoryInfo {
     /// Storage allocated for texture data
@@ -149,7 +150,7 @@ pub struct MemoryInfo {
 ///
 /// The (binary) length of such a string is limited to MAXLEN characters
 /// (including the the terminating zero).
-#[deriving(Copy)]
+#[derive(Copy)]
 #[repr(C, packed)]
 pub struct AiString {
     /// Binary length of the string excluding the terminal 0. This is NOT the
@@ -158,7 +159,7 @@ pub struct AiString {
     length: size_t,
 
     /// String buffer. Size limit is MAXLEN
-    data: [c_uchar, ..MAXLEN],
+    data: [c_uchar; MAXLEN],
 }
 
 impl AiString {
@@ -166,7 +167,7 @@ impl AiString {
     pub fn new() -> AiString {
         AiString {
             length: 0,
-            data: [0u8, ..MAXLEN],
+            data: [0u8; MAXLEN],
         }
     }
 
@@ -219,7 +220,7 @@ impl Clone for AiString {
 }
 
 /// Represents a vector in 2 dimensional space.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Vector2D {
     /// x component
@@ -230,7 +231,7 @@ pub struct Vector2D {
 
 impl Vector2D {
     /// Create an array representation of the vector
-    pub fn to_array(&self) -> [c_float, ..2] {
+    pub fn to_array(&self) -> [c_float; 2] {
         [self.x, self.y]
     }
 
@@ -260,7 +261,9 @@ impl Vector2D {
     }
 }
 
-impl Add<Vector2D, Vector2D> for Vector2D {
+impl Add for Vector2D {
+    type Output = Vector2D;
+
     fn add(self, rhs: Vector2D) -> Vector2D {
         Vector2D {
             x: self.x + rhs.x,
@@ -269,7 +272,9 @@ impl Add<Vector2D, Vector2D> for Vector2D {
     }
 }
 
-impl Sub<Vector2D, Vector2D> for Vector2D {
+impl Sub for Vector2D {
+    type Output = Vector2D;
+
     fn sub(self, rhs: Vector2D) -> Vector2D {
         Vector2D {
             x: self.x - rhs.x,
@@ -278,7 +283,9 @@ impl Sub<Vector2D, Vector2D> for Vector2D {
     }
 }
 
-impl Mul<f32, Vector2D> for Vector2D {
+impl Mul<f32> for Vector2D {
+    type Output = Vector2D;
+
     fn mul(self, rhs: f32) -> Vector2D {
         Vector2D {
             x: self.x * rhs,
@@ -287,7 +294,9 @@ impl Mul<f32, Vector2D> for Vector2D {
     }
 }
 
-impl Mul<Vector2D, Vector2D> for f32 {
+impl Mul<Vector2D> for f32 {
+    type Output = Vector2D;
+
     fn mul(self, rhs: Vector2D) -> Vector2D {
         Vector2D {
             x: self * rhs.x,
@@ -296,7 +305,9 @@ impl Mul<Vector2D, Vector2D> for f32 {
     }
 }
 
-impl Div<f32, Vector2D> for Vector2D {
+impl Div<f32> for Vector2D {
+    type Output = Vector2D;
+
     fn div(self, rhs: f32) -> Vector2D {
         Vector2D {
             x: self.x / rhs,
@@ -306,7 +317,7 @@ impl Div<f32, Vector2D> for Vector2D {
 }
 
 /// Represents a vector in 3 dimensional space.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Vector3D {
     /// x component
@@ -319,7 +330,7 @@ pub struct Vector3D {
 
 impl Vector3D {
     /// Create an array representation of the vector
-    pub fn to_array(&self) -> [c_float, ..3] {
+    pub fn to_array(&self) -> [c_float; 3] {
         [self.x, self.y, self.z]
     }
 
@@ -370,7 +381,9 @@ impl Vector3D {
     }
 }
 
-impl Add<Vector3D, Vector3D> for Vector3D {
+impl Add for Vector3D {
+    type Output = Vector3D;
+    
     fn add(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self.x + rhs.x,
@@ -380,7 +393,9 @@ impl Add<Vector3D, Vector3D> for Vector3D {
     }
 }
 
-impl Sub<Vector3D, Vector3D> for Vector3D {
+impl Sub for Vector3D {
+    type Output = Vector3D;
+    
     fn sub(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self.x - rhs.x,
@@ -390,7 +405,9 @@ impl Sub<Vector3D, Vector3D> for Vector3D {
     }
 }
 
-impl Mul<f32, Vector3D> for Vector3D {
+impl Mul<f32> for Vector3D {
+    type Output = Vector3D;
+    
     fn mul(self, rhs: f32) -> Vector3D {
         Vector3D {
             x: self.x * rhs,
@@ -400,7 +417,9 @@ impl Mul<f32, Vector3D> for Vector3D {
     }
 }
 
-impl Mul<Vector3D, Vector3D> for f32 {
+impl Mul<Vector3D> for f32 {
+    type Output = Vector3D;
+    
     fn mul(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self * rhs.x,
@@ -410,7 +429,9 @@ impl Mul<Vector3D, Vector3D> for f32 {
     }
 }
 
-impl Div<f32, Vector3D> for Vector3D {
+impl Div<f32> for Vector3D {
+    type Output = Vector3D;
+    
     fn div(self, rhs: f32) -> Vector3D {
         Vector3D {
             x: self.x / rhs,
@@ -422,7 +443,7 @@ impl Div<f32, Vector3D> for Vector3D {
 
 /// Represents a quaternion.
 #[allow(missing_docs)]
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Quaternion {
     pub w: c_float,
@@ -448,7 +469,7 @@ impl Quaternion {
     }
 
     /// Create an array representation of the vector
-    pub fn to_array(&self) -> [c_float, ..4] {
+    pub fn to_array(&self) -> [c_float; 4] {
         [self.w, self.x, self.y, self.z]
     }
 
@@ -500,7 +521,9 @@ impl Quaternion {
     }
 }
 
-impl Add<Quaternion, Quaternion> for Quaternion {
+impl Add for Quaternion {
+    type Output = Quaternion;
+    
     fn add(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self.w + rhs.w,
@@ -511,7 +534,9 @@ impl Add<Quaternion, Quaternion> for Quaternion {
     }
 }
 
-impl Sub<Quaternion, Quaternion> for Quaternion {
+impl Sub for Quaternion {
+    type Output = Quaternion;
+    
     fn sub(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self.w - rhs.w,
@@ -522,7 +547,9 @@ impl Sub<Quaternion, Quaternion> for Quaternion {
     }
 }
 
-impl Mul<f32, Quaternion> for Quaternion {
+impl Mul<f32> for Quaternion {
+    type Output = Quaternion;
+    
     fn mul(self, rhs: f32) -> Quaternion {
         Quaternion {
             w: self.w * rhs,
@@ -533,7 +560,9 @@ impl Mul<f32, Quaternion> for Quaternion {
     }
 }
 
-impl Mul<Quaternion, Quaternion> for f32 {
+impl Mul<Quaternion> for f32 {
+    type Output = Quaternion;
+    
     fn mul(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self * rhs.w,
@@ -544,7 +573,9 @@ impl Mul<Quaternion, Quaternion> for f32 {
     }
 }
 
-impl Div<f32, Quaternion> for Quaternion {
+impl Div<f32> for Quaternion {
+    type Output = Quaternion;
+    
     fn div(self, rhs: f32) -> Quaternion {
         Quaternion {
             w: self.w / rhs,
@@ -557,7 +588,7 @@ impl Div<f32, Quaternion> for Quaternion {
 
 /// Represents a 3x3 matrix.
 #[allow(missing_docs)]
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Matrix3x3 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float,
@@ -600,7 +631,9 @@ impl Matrix3x3 {
 
 }
 
-impl Mul<Matrix3x3, Matrix3x3> for Matrix3x3 {
+impl Mul for Matrix3x3 {
+    type Output = Matrix3x3;
+    
     fn mul(self, rhs: Matrix3x3) -> Matrix3x3 {
         let mut result = self.clone();
         unsafe {
@@ -612,7 +645,7 @@ impl Mul<Matrix3x3, Matrix3x3> for Matrix3x3 {
 
 /// Represents a 4x4 matrix.
 #[allow(missing_docs)]
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct Matrix4x4 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float, pub a4: c_float,
@@ -633,7 +666,7 @@ impl Matrix4x4 {
     }
 
     /// Returns a slice equivalent to this matrix in row-major format
-    pub fn to_array(&self) -> [[f32, ..4], ..4] {
+    pub fn to_array(&self) -> [[f32; 4]; 4] {
         [
             [self.a1, self.a2, self.a3, self.a4,],
             [self.b1, self.b2, self.b3, self.b4,],
@@ -663,7 +696,9 @@ impl Matrix4x4 {
     }
 }
 
-impl Mul<Matrix4x4, Matrix4x4> for Matrix4x4 {
+impl Mul for Matrix4x4 {
+    type Output = Matrix4x4;
+    
     fn mul(self, rhs: Matrix4x4) -> Matrix4x4 {
         let mut result = self.clone();
         unsafe {

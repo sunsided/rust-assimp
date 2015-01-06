@@ -61,7 +61,7 @@ impl Face {
 }
 
 /// A single influence of a bone on a vertex.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C)]
 pub struct VertexWeight {
     /// Index of the vertex which is influenced by the bone.
@@ -104,7 +104,7 @@ impl Bone {
 
 /// Enumerates the types of geometric primitives supported by Assimp.
 #[allow(unused_qualifications)]
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum PrimitiveType {
     /// A point primitive.
@@ -163,10 +163,10 @@ pub struct AnimMesh {
     bitangents: *mut Vector3D,
 
     /// Replacement for Mesh colors
-    colors: [*mut Color4D, ..MAX_NUMBER_OF_COLOR_SETS],
+    colors: [*mut Color4D; MAX_NUMBER_OF_COLOR_SETS],
 
     /// Replacement for Mesh texture_coords
-    texture_coords: [*mut Vector3D, ..MAX_NUMBER_OF_TEXTURECOORDS],
+    texture_coords: [*mut Vector3D; MAX_NUMBER_OF_TEXTURECOORDS],
 
     /// The number of vertices in the AnimMesh, and thus the length of all
     /// the member arrays.
@@ -347,13 +347,13 @@ pub struct Mesh {
     /// A mesh may contain 0 to `MAX_NUMBER_OF_COLOR_SETS` vertex colors per
     /// vertex. NULL if not present. Each array is num_vertices in size if
     /// present.
-    colors: [*mut Color4D, ..MAX_NUMBER_OF_COLOR_SETS],
+    colors: [*mut Color4D; MAX_NUMBER_OF_COLOR_SETS],
 
     /// Vertex texture coords, also known as UV channels.
     ///
     /// A mesh may contain 0 to `MAX_NUMBER_OF_TEXTURECOORDS` per
     /// vertex. NULL if not present. The array is mNumVertices in size.
-    texture_coords: [*mut Vector3D, ..MAX_NUMBER_OF_TEXTURECOORDS],
+    texture_coords: [*mut Vector3D; MAX_NUMBER_OF_TEXTURECOORDS],
 
     /// Specifies the number of components for a given UV channel.
     ///
@@ -363,7 +363,7 @@ pub struct Mesh {
     /// If the value is 1 for a given channel, p.y is set to 0.0f, too.
     ///
     /// Note: 4D coords are not supported
-    pub num_uv_components: [c_uint, ..MAX_NUMBER_OF_TEXTURECOORDS],
+    pub num_uv_components: [c_uint; MAX_NUMBER_OF_TEXTURECOORDS],
 
     /// The faces the mesh is constructed from.
     ///

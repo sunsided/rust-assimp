@@ -29,7 +29,7 @@ use ffi;
 /// ```
 ///
 /// where `diffContrib` is the intensity of the incoming light for that pixel.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum TextureOp {
     /// T = T1 * T2
@@ -54,7 +54,7 @@ pub enum TextureOp {
 /// Defines how UV coordinates outside the [0...1] range are handled.
 ///
 /// Commonly refered to as 'wrapping mode'.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum TextureMapMode {
     /// A texture coordinate `(u, v)` is translated to `(u % 1, v % 1)`
@@ -82,7 +82,7 @@ pub enum TextureMapMode {
 /// UV channels for non-UV mapped objects, as long as an accurate description
 /// how the mapping should look like (e.g spherical) is given.
 /// See the #AI_MATKEY_MAPPING property for more details.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum TextureMapping {
     /// The mapping coordinates are taken from an UV channel.
@@ -121,7 +121,7 @@ pub enum TextureMapping {
 /// In content pipelines you'll usually define how textures have to be handled,
 /// and the artists working on models have to conform to this specification,
 /// regardless which 3D tool they're using.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum TextureType {
     /// Dummy value.
@@ -212,7 +212,7 @@ pub const AI_TEXTURE_TYPE_MAX : u32 = TextureType::Unknown as u32;
 /// Again, this value is just a hint. Assimp tries to select the shader whose
 /// most common implementation matches the original rendering results of the
 /// 3D modeller which wrote a particular model as closely as possible.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum ShadingMode {
     /// Flat shading. Shading is done on per-face base, diffuse only.
@@ -263,7 +263,7 @@ pub enum ShadingMode {
 /// possible correctly.
 ///
 /// This corresponds to the #AI_MATKEY_TEXFLAGS property.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum TextureFlags {
     /// The texture's color values have to be inverted (componentwise 1-n)
@@ -304,7 +304,7 @@ pub enum TextureFlags {
 /// calculation.<br>
 /// This corresponds to the #AI_MATKEY_BLEND_FUNC property.
 ///
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum BlendMode {
     /// Formula: `SourceColor*SourceAlpha + DestColor*(1-SourceAlpha)`
@@ -322,7 +322,7 @@ pub enum BlendMode {
 /// Typically you'll want to build a matrix of this information. However,
 /// we keep separate scaling/translation/rotation values to make it
 /// easier to process and optimize UV transformations internally.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C, packed)]
 pub struct UVTransform {
     /// Translation on the u and v axes.  The default value is (0, 0).
@@ -340,7 +340,7 @@ pub struct UVTransform {
 }
 
 /// A very primitive RTTI system for the contents of material properties.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum PropertyTypeInfo {
     /// Array of single-precision (32 Bit) floats

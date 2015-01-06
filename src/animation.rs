@@ -7,7 +7,7 @@ use util::{ptr_ptr_to_slice, ptr_to_slice};
 use types::{Vector3D, Quaternion, AiString};
 
 /// A time-value pair specifying a certain 3D vector for the given time.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C)]
 pub struct VectorKey {
     /// The time of this key
@@ -20,7 +20,7 @@ pub struct VectorKey {
 /// A time-value pair specifying a rotation for the given time.
 ///
 /// Rotations are expressed with quaternions.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C)]
 pub struct QuatKey {
     /// The time of this key
@@ -32,7 +32,7 @@ pub struct QuatKey {
 }
 
 /// Binds a anim mesh to a specific point in time.
-#[deriving(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Show)]
 #[repr(C)]
 pub struct MeshKey {
     /// The time of this key
@@ -48,7 +48,7 @@ pub struct MeshKey {
 /// Defines how an animation channel behaves outside the defined time range.
 ///
 /// This corresponds to NodeAnim::pre_state and NodeAnim::post_state.
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(C)]
 pub enum AnimBehaviour {
     /// The value from the default node transformation is taken

@@ -1,6 +1,7 @@
 //! Defines the scene importer
 
 use libc::{c_int, c_char};
+use std::c_str::ToCStr;
 use std::ptr;
 
 use scene::Scene;

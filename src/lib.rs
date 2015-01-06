@@ -13,7 +13,7 @@
 #![warn(unused_imports)]
 #![deny(unused_typecasts)]
 
-#![feature(globs, unsafe_destructor)]
+#![feature(associated_types, default_type_params, globs, unsafe_destructor)]
 
 #![unstable]
 
