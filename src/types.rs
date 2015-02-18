@@ -189,8 +189,10 @@ impl AiString {
 impl fmt::Show for AiString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.as_str() {
-            Ok(s) => s.fmt(f),
-            _    => "".fmt(f),
+            Ok(s) => write!(f, "{}", s),
+            //Ok(s) => s.fmt(f),
+            //_    => "".fmt(f),
+            _    => write!(f, "{}", ""),
         }
     }
 }
@@ -215,6 +217,15 @@ impl Clone for AiString {
         AiString {
             length: self.length,
             data: self.data,
+        }
+    }
+}
+
+impl fmt::String for AiString {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.as_str() {
+            Ok(s) => write!(f, "{}", s),
+            _   => write!(f, "{}", ""),
         }
     }
 }

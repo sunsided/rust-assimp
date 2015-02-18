@@ -1,10 +1,13 @@
 //! Defines functions to retrieve information about the version of assimp being used.
 
-use std::c_str::{CString,ToCStr};
+// use std::c_str::{CString,ToCStr};
 
 use types::AiBool::{AiTrue};
 use types::AiString;
 use ffi;
+use std::ffi::CString;
+use std::ffi::c_str_to_bytes;
+use std::str::from_utf8;
 
 /// Flags for checking how assimp was compiled
 #[derive(Copy, Clone, PartialEq, Eq, Show)]
@@ -137,7 +140,11 @@ pub fn get_version() -> (uint, uint, uint) {
 /// Get a string containg the assimp licene
 pub fn get_legal_string() -> String {
     unsafe {
-        CString::new(ffi::aiGetLegalString(), false).to_string()
+        let s = ffi::aiGetLegalString();
+        let buff = c_str_to_bytes(&s);
+        let slice = from_utf8(buff).unwrap();
+        String::from_str(slice)
+        //CString::new(ffi::aiGetLegalString(), false).to_string()
     }
 }
 
@@ -172,7 +179,9 @@ pub fn is_flag_set(flag: CompileFlags) -> bool {
 ///   Must include a leading dot '.'. Example: '.3ds'
 pub fn is_ext_supported(ext: &str) -> bool {
     unsafe {
-        ext.with_c_str(|s| ffi::aiIsExtensionSupported(s)) == AiTrue
+        let cext = CString::from_slice(ext.as_bytes());
+        ffi::aiIsExtensionSupported(cext.as_ptr()) == AiTrue
+        //ext.with_c_str(|s| ffi::aiIsExtensionSupported(s)) == AiTrue
     }
 }
 

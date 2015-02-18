@@ -1,8 +1,9 @@
 //! Defines the scene importer
 
 use libc::{c_int, c_char};
-use std::c_str::ToCStr;
+// use std::c_str::ToCStr;
 use std::ptr;
+use std::ffi::CString;
 
 use scene::Scene;
 use ffi;
@@ -92,12 +93,18 @@ impl Importer {
     /// Create a `Scene` from the given file.
     pub fn import_from_file(&self, file_name: &str) -> Option<Scene> {
         unsafe {
-            let raw = file_name.with_c_str(|file|
-                ffi::aiImportFileExWithProperties(
-                    file,
-                    self.flags,
-                    ptr::null_mut(), // no custom file io system
-                    self.property_store as *const ffi::PropertyStore));
+            let cfile_name = CString::from_slice(file_name.as_bytes());
+            let raw = ffi::aiImportFileExWithProperties(
+                cfile_name.as_ptr(), 
+                self.flags, 
+                ptr::null_mut(), 
+                self.property_store as *const ffi::PropertyStore);
+            //let raw = file_name.with_c_str(|file|
+                //ffi::aiImportFileExWithProperties(
+                    //file,
+                    //self.flags,
+                    //ptr::null_mut(), // no custom file io system
+                    //self.property_store as *const ffi::PropertyStore));
             if raw.is_null() {
                 None
             } else {

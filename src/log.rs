@@ -2,7 +2,7 @@
 
 // use libc::{c_char};
 // use std::c_str::CString;
-use std::c_str::ToCStr;
+// use std::c_str::ToCStr;
 use std::ptr;
 
 use types::AiBool;
@@ -10,6 +10,7 @@ use ffi;
 
 pub use log::LogStream::{Stdout, Stderr, Debugger, File, Custom};
 
+use std::ffi::CString;
 
 /// Default logging options for assimp
 pub enum LogStream<'a> {
@@ -67,8 +68,9 @@ pub fn add_log_stream(log_type: LogStream) {
     unsafe {
         let null = ptr::null();
         let log = match log_type {
-            File(fname) => fname.with_c_str(|s|
-                ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, s) ),
+            File(fname) => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, CString::from_slice(fname.as_bytes()).as_ptr()),
+            //File(fname) => fname.with_c_str(|s|
+                //ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, s) ),
             Stdout =>
                 ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_STDOUT, null),
             Stderr =>
