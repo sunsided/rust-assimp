@@ -16,7 +16,7 @@ fn main() {
     // Print all the vertices in all the meshes
     for mesh in scene.get_meshes().iter() {
         for vert in mesh.get_vertices().iter() {
-            println!("{}", vert);
+            println!("{:?}", vert);
         }
     }
 }

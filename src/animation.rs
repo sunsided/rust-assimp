@@ -197,7 +197,7 @@ impl MeshAnim {
 ///
 /// For each node affected by the animation a separate series of data is given.
 #[repr(C)]
-pub struct Animation<'a> {
+pub struct Animation {
     /// The name of the animation. If the modeling package this data was
     /// exported from does support only a single animation channel, this
     /// name is usually empty (length is zero).
@@ -226,7 +226,7 @@ pub struct Animation<'a> {
     mesh_channels: *mut*mut MeshAnim,
 }
 
-impl<'a> Animation<'a> {
+impl<'a> Animation {
     /// The node animation channels. Each channel affects a single node.
     pub fn get_channels(&self) -> &[&NodeAnim] {
         unsafe { ptr_ptr_to_slice(self.channels, self.num_channels as uint) }
@@ -259,7 +259,7 @@ impl<'a> Animation<'a> {
     }
 }
 
-impl<'a> fmt::Show for Animation<'a> {
+impl<'a> fmt::Show for Animation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Animation {{ \
         name: {}, \
