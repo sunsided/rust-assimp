@@ -552,7 +552,7 @@ impl Mesh {
     }
 }
 
-impl fmt::Show for Mesh {
+impl fmt::Display for Mesh {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         try!(write!(f, "Mesh {{ name: {}, primitive_types:", self.name,));
 

@@ -186,7 +186,7 @@ impl AiString {
     }
 }
 
-impl fmt::Show for AiString {
+impl fmt::Debug for AiString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.as_str() {
             Ok(s) => write!(f, "{}", s),
@@ -221,7 +221,7 @@ impl Clone for AiString {
     }
 }
 
-impl fmt::String for AiString {
+impl fmt::Display for AiString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.as_str() {
             Ok(s) => write!(f, "{}", s),

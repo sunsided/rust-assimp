@@ -384,7 +384,7 @@ impl<'a> Scene<'a> {
     }
 }
 
-impl<'a> fmt::Show for Scene<'a> {
+impl<'a> fmt::Display for Scene<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Scene {{ \
         num_meshes: {}, \
