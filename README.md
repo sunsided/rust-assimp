@@ -1,4 +1,4 @@
-rust-assimp [![Build Status](https://travis-ci.org/jemcroft/rust-assimp.svg?branch=master)](https://travis-ci.org/jemcroft/rust-assimp)
+rust-assimp [![Build Status](https://travis-ci.org/lotusronin/rust-assimp.svg?branch=master)](https://travis-ci.org/lotusronin/rust-assimp)
 ===========
 
 [Documentation](http://www.rust-ci.org/jemcroft/rust-assimp/doc/assimp/)
@@ -33,7 +33,7 @@ fn main() {
     // Print all the vertices in all the meshes
     for mesh in scene.get_meshes().iter() {
         for vert in mesh.get_vertices().iter() {
-            println!("{}", vert);
+            println!("{:?}", vert);
         }
     }
 }
