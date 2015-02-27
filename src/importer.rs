@@ -93,7 +93,7 @@ impl Importer {
     /// Create a `Scene` from the given file.
     pub fn import_from_file(&self, file_name: &str) -> Option<Scene> {
         unsafe {
-            let cfile_name = CString::from_slice(file_name.as_bytes());
+            let cfile_name = CString::new(file_name).unwrap();
             let raw = ffi::aiImportFileExWithProperties(
                 cfile_name.as_ptr(), 
                 self.flags, 

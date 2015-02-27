@@ -173,12 +173,12 @@ impl AiString {
 
     /// Get a `str` representation of this `AiString`
     pub fn as_str(&self) -> Result<&str, str::Utf8Error> {
-        str::from_utf8(self.data.slice_to((self.length) as uint))
+        str::from_utf8(&(self.data))
     }
 
     /// Get a `String` representation of this `AiString`
     pub fn into_string(&self) -> Option<String> {
-        match String::from_utf8((self.data.slice_to(self.length as uint))
+        match String::from_utf8((self.data)
                                 .to_vec()) {
             Err(_) => None,
             Ok(s) => Some(s),

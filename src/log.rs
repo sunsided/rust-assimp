@@ -68,7 +68,7 @@ pub fn add_log_stream(log_type: LogStream) {
     unsafe {
         let null = ptr::null();
         let log = match log_type {
-            File(fname) => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, CString::from_slice(fname.as_bytes()).as_ptr()),
+            File(fname) => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, CString::new(fname).unwrap().as_ptr()),
             //File(fname) => fname.with_c_str(|s|
                 //ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, s) ),
             Stdout =>

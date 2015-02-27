@@ -14,7 +14,7 @@
 #![deny(unused_typecasts)]
 
 #![feature(associated_types, default_type_params, globs, unsafe_destructor)]
-
+#![feature(libc)]
 #![unstable]
 
 extern crate libc;
