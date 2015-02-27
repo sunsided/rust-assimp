@@ -1,9 +1,6 @@
 language: rust
 os:
     - linux
-env:
-  global:
-    - secure: oQGDq5yg2sK5whSr9H1PnJH5DMvOPUElg8OPRZzby7kA40pISEt31zs/ifD3CO1NrSeB7w3ipyYCEtmyvA93YqPd+AR3HInu1sz0XB1Rmpugsi3wPmesV83QFfynee7EvyHnbi0K6ivw3RCjx9LTIKPs0xVnCv5H1Cc+w6bDWno=
 before_script:
     - rustc --version
     - cargo --version
