@@ -9,7 +9,7 @@ use types::AiBool;
 use ffi;
 
 pub use log::LogStream::{Stdout, Stderr, Debugger, File, Custom};
-
+use std::old_io::Writer;
 use std::ffi::CString;
 
 /// Default logging options for assimp

@@ -203,7 +203,7 @@ impl PartialEq for AiString {
             return false
         }
 
-        for i in range(0u, self.length as uint) {
+        for i in 0u .. self.length as uint {
             if self.data[i] != other.data[i] {
                 return false
             }
