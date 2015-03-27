@@ -14,6 +14,7 @@
 #![deny(unused_typecasts)]
 
 #![feature(associated_types, default_type_params, globs, unsafe_destructor)]
+#![feature(core, int_uint, collections, std_misc, old_io)]
 #![feature(libc)]
 #![unstable]
 
