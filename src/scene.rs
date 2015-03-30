@@ -71,12 +71,12 @@ impl Node {
 
     /// Get the childern of this node
     pub fn get_children(&self) -> &[&Node] {
-        unsafe { ptr_ptr_to_slice(self.children, self.num_children as uint) }
+        unsafe { ptr_ptr_to_slice(self.children, self.num_children as usize) }
     }
 
     /// Get the meshes of this node. Each entry is an index into the mesh.
     pub fn get_meshes(&self) -> &[u32] {
-        unsafe { ptr_to_slice(self.meshes, self.num_meshes as uint) }
+        unsafe { ptr_to_slice(self.meshes, self.num_meshes as usize) }
     }
 }
 
@@ -295,7 +295,7 @@ impl<'a> Scene<'a> {
     /// All animations imported from the given file are listed here.
     pub fn get_animations(&self) -> &[&Animation] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.animations,
-                                  self.raw_scene.num_animations as uint) }
+                                  self.raw_scene.num_animations as usize) }
     }
 
     /// Get the array of meshes.
@@ -305,7 +305,7 @@ impl<'a> Scene<'a> {
     /// will always be at least one mesh.
     pub fn get_meshes(&self) -> &[&Mesh] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.meshes,
-                                  self.raw_scene.num_meshes as uint) }
+                                  self.raw_scene.num_meshes as usize) }
     }
 
     /// Get the array of light sources.
@@ -313,7 +313,7 @@ impl<'a> Scene<'a> {
     /// All light sources imported from the given file are listed here.
     pub fn get_lights(&self) -> &[&Light] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.lights,
-                                  self.raw_scene.num_lights as uint) }
+                                  self.raw_scene.num_lights as usize) }
     }
 
     /// Get the array of cameras.
@@ -323,7 +323,7 @@ impl<'a> Scene<'a> {
     /// into the scene.
     pub fn get_cameras(&self) -> &[&Camera] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.cameras,
-                                  self.raw_scene.num_cameras as uint) }
+                                  self.raw_scene.num_cameras as usize) }
     }
 
     /// Get the array of materials.
@@ -333,7 +333,7 @@ impl<'a> Scene<'a> {
     /// always be at least ONE material.
     pub fn get_materials(&self) -> &[&Material] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.materials,
-                                  self.raw_scene.num_materials as uint) }
+                                  self.raw_scene.num_materials as usize) }
     }
 
     /// Get the array of embedded textures.
@@ -343,7 +343,7 @@ impl<'a> Scene<'a> {
     /// some GameStudio versions)
     pub fn get_textures(&self) -> &[&Texture] {
         unsafe { ptr_ptr_to_slice(self.raw_scene.textures,
-                                  self.raw_scene.num_textures as uint) }
+                                  self.raw_scene.num_textures as usize) }
     }
 
     /// Get the amount of memory used to store this scene.

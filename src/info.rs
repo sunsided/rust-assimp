@@ -123,15 +123,15 @@ pub enum CompileFlags {
 // }//}}}
 
 /// Get the version number of assimp as a tuple `(major, minor, revision)`
-pub fn get_version() -> (uint, uint, uint) {
+pub fn get_version() -> (usize, usize, usize) {
     let major = unsafe {
-        ffi::aiGetVersionMajor() as uint
+        ffi::aiGetVersionMajor() as usize
     };
     let minor = unsafe {
-        ffi::aiGetVersionMinor() as uint
+        ffi::aiGetVersionMinor() as usize
     };
     let rev = unsafe {
-        ffi::aiGetVersionRevision() as uint
+        ffi::aiGetVersionRevision() as usize
     };
     (major, minor, rev)
 }

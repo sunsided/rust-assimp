@@ -23,7 +23,7 @@ pub enum Property<'a> {
     /// compile-time.
     ///
     /// Property data type: integer.
-    PP_SBBC_MAX_BONES(int),
+    PP_SBBC_MAX_BONES(i32),
 
     ///  Specifies the maximum angle that may be between two vertex tangents
     ///         that their tangents and bi-tangents are smoothed.
@@ -39,7 +39,7 @@ pub enum Property<'a> {
     /// The specified channel must exist or an error will be raised.
     ///
     /// Property type: integer. Default value: 0
-    PP_CT_TEXTURE_CHANNEL_INDEX(int),
+    PP_CT_TEXTURE_CHANNEL_INDEX(i32),
 
     ///  Specifies the maximum angle that may be between two face normals
     ///          at the same vertex position that their are smoothed together.
@@ -154,7 +154,7 @@ pub enum Property<'a> {
     /// whether a mesh must be split or not.
     ///
     /// Property type: integer. The default value is `SLM_DEFAULT_MAX_TRIANGLES`
-    PP_SLM_TRIANGLE_LIMIT(int),
+    PP_SLM_TRIANGLE_LIMIT(i32),
 
     /// Set the maximum number of vertices in a mesh.
     ///
@@ -162,7 +162,7 @@ pub enum Property<'a> {
     /// whether a mesh must be split or not.
     ///
     /// Property type: integer. The default value is `SLM_DEFAULT_MAX_VERTICES`
-    PP_SLM_VERTEX_LIMIT(int),
+    PP_SLM_VERTEX_LIMIT(i32),
 
     ///  Set the maximum number of bones affecting a single vertex
     ///
@@ -170,7 +170,7 @@ pub enum Property<'a> {
     ///
     ///
     /// Property type: integer. The default value is `LBW_MAX_WEIGHTS`
-    PP_LBW_MAX_WEIGHTS(int),
+    PP_LBW_MAX_WEIGHTS(i32),
 
     /// Lower the deboning threshold in order to remove more bones.
     ///
@@ -199,7 +199,7 @@ pub enum Property<'a> {
     /// performance improvements for most nVidia/AMD cards since 2002.
     ///
     /// Property type: integer.
-    PP_ICL_PTCACHE_SIZE(int),
+    PP_ICL_PTCACHE_SIZE(i32),
 
     /// Input parameter to the `Process::RemoveComponent` step:
     /// Specifies the parts of the data structure to be removed.
@@ -267,20 +267,20 @@ pub enum Property<'a> {
     /// you want to override the global setting).
     ///
     /// Property type: integer. The default value is 0.
-    IMPORT_GLOBAL_KEYFRAME(int),
+    IMPORT_GLOBAL_KEYFRAME(i32),
 
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_MD3_KEYFRAME(int),
+    IMPORT_MD3_KEYFRAME(i32),
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_MD2_KEYFRAME(int),
+    IMPORT_MD2_KEYFRAME(i32),
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_MDL_KEYFRAME(int),
+    IMPORT_MDL_KEYFRAME(i32),
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_MDC_KEYFRAME(int),
+    IMPORT_MDC_KEYFRAME(i32),
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_SMD_KEYFRAME(int),
+    IMPORT_SMD_KEYFRAME(i32),
     /// see `IMPORT_GLOBAL_KEYFRAME`
-    IMPORT_UNREAL_KEYFRAME(int),
+    IMPORT_UNREAL_KEYFRAME(i32),
 
     /// Configures the AC loader to collect all surfaces which have the
     /// "Backface cull" flag set in separate meshes.
@@ -365,7 +365,7 @@ pub enum Property<'a> {
     ///  layer name may not be empty.<br>
     ///
     /// Property type: Integer.  Default value: all layers are loaded.
-    IMPORT_LWO_ONE_LAYER_ONLY(int),
+    IMPORT_LWO_ONE_LAYER_ONLY(i32),
 
     ///  Configures the MD5 loader to not load the MD5ANIM file for
     ///  a MD5MESH file automatically.
@@ -393,9 +393,9 @@ pub enum Property<'a> {
     /// See also `IMPORT_LWS_ANIM_END` - end of the imported time range
     ///
     /// Property type: Integer. Default value: taken from file.
-    IMPORT_LWS_ANIM_START(int),
+    IMPORT_LWS_ANIM_START(i32),
     /// See `IMPORT_LWS_ANIM_START` - end of the imported time range
-    IMPORT_LWS_ANIM_END(int),
+    IMPORT_LWS_ANIM_END(i32),
 
     /// Defines the output frame rate of the IRR loader.
     ///
@@ -404,7 +404,7 @@ pub enum Property<'a> {
     /// are returned by the converter.<br>
     ///
     /// Property type: integer. Default value: 100
-    IMPORT_IRR_ANIM_FPS(int),
+    IMPORT_IRR_ANIM_FPS(i32),
 
     /// Ogre Importer will try to load this Materialfile.
     ///

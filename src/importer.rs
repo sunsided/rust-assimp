@@ -67,7 +67,7 @@ impl Importer {
                                                val as c_int);
                 }
                 PBool(val) => {
-                    let bool_int = match val { true => 1i, false => 0i };
+                    let bool_int = match val { true => 1i32, false => 0i32 };
                     println!("bool_int : {}", bool_int);
                     ffi::aiSetImportPropertyInteger(self.property_store,
                                                s.as_ptr() as *const c_char,
@@ -122,7 +122,7 @@ impl Drop for Importer {
 
 enum PropertyType<'a> {
     PFloat(f32),
-    PInt(int),
+    PInt(i32),
     PBool(bool),
     PStr(&'a AiString),
 }
@@ -166,15 +166,15 @@ fn decompose_property(property: Property) -> (&'static str, PropertyType) {
         // This properties take a list as an arguement
         Property::PP_RVC_FLAGS(list) => {
             let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
-            ( "PP_RVC_FLAGS", PInt(result as int) )
+            ( "PP_RVC_FLAGS", PInt(result as i32) )
         }
         Property::PP_SBP_REMOVE(list) => {
             let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
-            ( "PP_SBP_REMOVE", PInt(result as int) )
+            ( "PP_SBP_REMOVE", PInt(result as i32) )
         }
         Property::PP_TUV_EVALUATE(list) => {
             let result = list.iter().fold(0, |sum, &y| (sum | y as u32));
-            ( "PP_TUV_EVALUATE", PInt(result as int) )
+            ( "PP_TUV_EVALUATE", PInt(result as i32) )
         }
         Property::PP_FID_ANIM_ACCURACY(a) =>
             ( "PP_FID_ANIM_ACCURACY", PFloat(a) ),

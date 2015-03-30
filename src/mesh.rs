@@ -9,22 +9,22 @@ use util::{ptr_ptr_to_slice, ptr_to_slice};
 use mesh::PrimitiveType::{Point, Line, Triangle, Polygon};
 
 /// Maximum number of indices per face (polygon).
-pub const MAX_FACE_INDICES : uint = 0x7fff;
+pub const MAX_FACE_INDICES : usize = 0x7fff;
 
 /// Maximum number of indices per face (polygon).
-pub const MAX_BONE_WEIGHTS : uint = 0x7fffffff;
+pub const MAX_BONE_WEIGHTS : usize = 0x7fffffff;
 
 /// Maximum number of vertices per mesh.
-pub const MAX_VERTICES : uint = 0x7fffffff;
+pub const MAX_VERTICES : usize = 0x7fffffff;
 
 /// Maximum number of faces per mesh.
-pub const MAX_FACES : uint = 0x7fffffff;
+pub const MAX_FACES : usize = 0x7fffffff;
 
 /// Supported number of vertex color sets per mesh.
-pub const MAX_NUMBER_OF_COLOR_SETS : uint = 0x8;
+pub const MAX_NUMBER_OF_COLOR_SETS : usize = 0x8;
 
 /// Supported number of texture coord sets (uv[w] channels) per mesh
-pub const MAX_NUMBER_OF_TEXTURECOORDS : uint = 0x8;
+pub const MAX_NUMBER_OF_TEXTURECOORDS : usize = 0x8;
 
 /// A single face in a mesh, referring to multiple vertices.
 ///
@@ -56,7 +56,7 @@ pub struct Face {
 impl Face {
     /// Get the list of indices referenced by this face.
     pub fn get_indices(&self) -> &[u32] {
-        unsafe { ptr_to_slice(self.indices, self.num_indices as uint) }
+        unsafe { ptr_to_slice(self.indices, self.num_indices as usize) }
     }
 }
 
@@ -98,7 +98,7 @@ pub struct Bone {
 impl Bone {
     /// Get the vertices affected by this bone
     pub fn get_weights(&self) -> &[VertexWeight] {
-        unsafe { ptr_to_slice(self.weights, self.num_weights as uint) }
+        unsafe { ptr_to_slice(self.weights, self.num_weights as usize) }
     }
 }
 
@@ -187,14 +187,14 @@ impl AnimMesh {
     /// replacement array is `None` and the corresponding source array is not,
     /// the source data is taken instead)
     pub fn get_vertices(&self) -> &[Vector3D] {
-        unsafe { ptr_to_slice(self.vertices, self.num_vertices as uint) }
+        unsafe { ptr_to_slice(self.vertices, self.num_vertices as usize) }
     }
 
     /// Replacement for Mesh normals.
     pub fn get_normals(&self) -> &[Vector3D] {
         let len = match self.normals.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.normals, len) }
     }
@@ -203,7 +203,7 @@ impl AnimMesh {
     pub fn get_tangents(&self) -> &[Vector3D] {
         let len = match self.tangents.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.tangents, len) }
     }
@@ -212,7 +212,7 @@ impl AnimMesh {
     pub fn get_bitangents(&self) -> &[Vector3D] {
         let len = match self.bitangents.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.bitangents, len) }
     }
@@ -224,7 +224,7 @@ impl AnimMesh {
         for colors in self.colors.iter() {
             if colors.is_null() { break; }
             unsafe {
-                list.push(ptr_to_slice(*colors, self.num_vertices as uint));
+                list.push(ptr_to_slice(*colors, self.num_vertices as usize));
             }
         }
 
@@ -242,7 +242,7 @@ impl AnimMesh {
         for tex_coords in self.texture_coords.iter() {
             if tex_coords.is_null() { break; }
             unsafe {
-                list.push(ptr_to_slice(*tex_coords, self.num_vertices as uint));
+                list.push(ptr_to_slice(*tex_coords, self.num_vertices as usize));
             }
         }
 
@@ -428,7 +428,7 @@ impl Mesh {
     /// This array is always present in a mesh. The array is
     /// num_vertices in size.
     pub fn get_vertices(&self) -> &[Vector3D] {
-        unsafe { ptr_to_slice(self.vertices, self.num_vertices as uint) }
+        unsafe { ptr_to_slice(self.vertices, self.num_vertices as usize) }
     }
 
     /// Vertex normals.
@@ -456,7 +456,7 @@ impl Mesh {
     pub fn get_normals(&self) -> &[Vector3D] {
         let len = match self.normals.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.normals, len) }
     }
@@ -477,7 +477,7 @@ impl Mesh {
     pub fn get_tangents(&self) -> &[Vector3D] {
         let len = match self.tangents.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.tangents, len) }
     }
@@ -493,7 +493,7 @@ impl Mesh {
     pub fn get_bitangents(&self) -> &[Vector3D] {
         let len = match self.bitangents.is_null() {
             true => 0,
-            false => self.num_vertices as uint,
+            false => self.num_vertices as usize,
         };
         unsafe { ptr_to_slice(self.bitangents, len) }
     }
@@ -509,7 +509,7 @@ impl Mesh {
         for colors in self.colors.iter() {
             if colors.is_null() { break; }
             unsafe {
-                list.push(ptr_to_slice(*colors, self.num_vertices as uint));
+                list.push(ptr_to_slice(*colors, self.num_vertices as usize));
             }
         }
 
@@ -526,7 +526,7 @@ impl Mesh {
         for tex_coords in self.texture_coords.iter() {
             if tex_coords.is_null() { break; }
             unsafe {
-                list.push(ptr_to_slice(*tex_coords, self.num_vertices as uint));
+                list.push(ptr_to_slice(*tex_coords, self.num_vertices as usize));
             }
         }
 
@@ -540,7 +540,7 @@ impl Mesh {
     /// If the `SceneFlags::NonVerboseFormat` is *not* set each face references
     /// an unique set of vertices.
     pub fn get_faces(&self) -> &[Face] {
-        unsafe { ptr_to_slice(self.faces, self.num_faces as uint) }
+        unsafe { ptr_to_slice(self.faces, self.num_faces as usize) }
     }
 
     /// The bones of this mesh.
@@ -548,7 +548,7 @@ impl Mesh {
     /// A bone consists of a name by which it can be found in the frame
     /// hierarchy and a set of vertex weights.
     pub fn get_bones(&self) -> &[&Bone] {
-        unsafe { ptr_ptr_to_slice(self.bones, self.num_bones as uint) }
+        unsafe { ptr_ptr_to_slice(self.bones, self.num_bones as usize) }
     }
 }
 

@@ -143,7 +143,7 @@ impl NodeAnim {
     /// If there are rotation keys, there will also be at least one
     /// scaling and one position key.
     pub fn get_rotation_keys(&self) -> &[QuatKey] {
-        unsafe { ptr_to_slice(self.rotation_keys, self.num_rotation_keys as uint) }
+        unsafe { ptr_to_slice(self.rotation_keys, self.num_rotation_keys as usize) }
     }
 
     /// The position keys of this animation channel. Positions are
@@ -152,7 +152,7 @@ impl NodeAnim {
     /// If there are position keys, there will also be at least one
     /// scaling and one rotation key.
     pub fn get_position_keys(&self) -> &[VectorKey] {
-        unsafe { ptr_to_slice(self.position_keys, self.num_position_keys as uint) }
+        unsafe { ptr_to_slice(self.position_keys, self.num_position_keys as usize) }
     }
 
     /// The scaling keys of this animation channel. Scalings are
@@ -161,7 +161,7 @@ impl NodeAnim {
     /// If there are scaling keys, there will also be at least one
     /// position and one rotation key.
     pub fn get_scaling_keys(&self) -> &[VectorKey] {
-        unsafe { ptr_to_slice(self.scaling_keys, self.num_scaling_keys as uint) }
+        unsafe { ptr_to_slice(self.scaling_keys, self.num_scaling_keys as usize) }
     }
 }
 
@@ -189,7 +189,7 @@ pub struct MeshAnim {
 impl MeshAnim {
     /// Key frames of the animation. Must be at least 1
     pub fn get_keys(&self) -> &[MeshKey] {
-        unsafe { ptr_to_slice(self.keys, self.num_keys as uint) }
+        unsafe { ptr_to_slice(self.keys, self.num_keys as usize) }
     }
 }
 
@@ -229,13 +229,13 @@ pub struct Animation {
 impl<'a> Animation {
     /// The node animation channels. Each channel affects a single node.
     pub fn get_channels(&self) -> &[&NodeAnim] {
-        unsafe { ptr_ptr_to_slice(self.channels, self.num_channels as uint) }
+        unsafe { ptr_ptr_to_slice(self.channels, self.num_channels as usize) }
     }
 
     /// The mesh animation channels. Each channel affects a single mesh.
     pub fn get_mesh_channels(&self) -> &[&MeshAnim] {
         unsafe { ptr_ptr_to_slice(self.mesh_channels,
-                                  self.num_mesh_channels as uint) }
+                                  self.num_mesh_channels as usize) }
     }
 
     /// Find the `NodeAnim` with the name `name` in this `Animation`

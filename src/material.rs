@@ -429,7 +429,7 @@ impl MaterialProperty {
     /// Get a binary buffer that holds the property's value.
     /// The size of the buffer is always data_length.
     pub fn get_data(&self) -> &[u8] {
-        unsafe { ptr_to_slice(self.data, self.data_length as uint) }
+        unsafe { ptr_to_slice(self.data, self.data_length as usize) }
     }
 
 }
@@ -456,14 +456,14 @@ pub struct Material {
 impl Material {
     /// Get list of all material properties loaded.
     pub fn get_properties(&self) -> &[&MaterialProperty] {
-        unsafe { ptr_ptr_to_slice(self.properties, self.num_properties as uint) }
+        unsafe { ptr_ptr_to_slice(self.properties, self.num_properties as usize) }
     }
 
     /// Get the path of the texture
     // TODO make a nicer interface to this information
     pub fn get_texture(&self,
                        tex_type: TextureType,
-                       index: uint,
+                       index: usize,
                        ) -> Option<String> {
         unsafe {
             // aiGetMaterialTexture(aiMaterial: *const material::Material,

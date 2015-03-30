@@ -111,7 +111,7 @@ impl Texture {
     pub fn get_texture_data(&self) -> TextureData {
         if self.height == 0 {
             let data = unsafe {
-                ptr_to_slice(self.pc_data as *mut u8, self.width as uint)
+                ptr_to_slice(self.pc_data as *mut u8, self.width as usize)
             };
             TextureData::Encoded {
                 len: self.width,
@@ -119,7 +119,7 @@ impl Texture {
             }
         } else {
             let data = unsafe {
-                ptr_to_slice(self.pc_data, (self.width * self.height) as uint)
+                ptr_to_slice(self.pc_data, (self.width * self.height) as usize)
             };
             TextureData::Decoded {
                 width: self.width,

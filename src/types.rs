@@ -11,7 +11,7 @@ use vecmath as m;
 use ffi;
 
 /// Maximum dimension for strings, ASSIMP strings are zero terminated.
-const MAXLEN : uint = 1024u;
+const MAXLEN : usize = 1024;
 
 /// Boolean type used by assimp.
 #[doc(hidden)]
@@ -203,7 +203,7 @@ impl PartialEq for AiString {
             return false
         }
 
-        for i in 0u .. self.length as uint {
+        for i in 0 .. self.length as usize {
             if self.data[i] != other.data[i] {
                 return false
             }
