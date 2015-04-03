@@ -15,7 +15,7 @@ const MAXLEN : usize = 1024;
 
 /// Boolean type used by assimp.
 #[doc(hidden)]
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(C)]
 pub enum AiBool {
     /// Represents false
@@ -35,7 +35,7 @@ impl AiBool {
 }
 
 ///	Standard return type for some library functions.
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(C)]
 pub enum Return {
     /// Indicates that a function was successful
@@ -53,7 +53,7 @@ pub enum Return {
 ///
 /// The components are the coefficients in the equation
 /// `ax + by + cz + d = 0`.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Plane {
     /// x coefficient in the plane equation
@@ -67,7 +67,7 @@ pub struct Plane {
 }
 
 /// Represents a ray.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Ray {
     /// Position of the ray
@@ -77,7 +77,7 @@ pub struct Ray {
 }
 
 /// Represents a color in Red-Green-Blue space.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Color3D {
     /// Red component
@@ -89,7 +89,7 @@ pub struct Color3D {
 }
 
 /// Represents a color in Red-Green-Blue-Alpha space.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Color4D {
     /// Red component
@@ -105,7 +105,7 @@ pub struct Color4D {
 /// Stores the memory requirements for different components.
 ///
 /// All sizes are in bytes. Returned by Scene::get_memory_info()
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(C)]
 pub struct MemoryInfo {
     /// Storage allocated for texture data
@@ -231,7 +231,7 @@ impl fmt::Display for AiString {
 }
 
 /// Represents a vector in 2 dimensional space.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Vector2D {
     /// x component
@@ -328,7 +328,7 @@ impl Div<f32> for Vector2D {
 }
 
 /// Represents a vector in 3 dimensional space.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Vector3D {
     /// x component
@@ -454,7 +454,7 @@ impl Div<f32> for Vector3D {
 
 /// Represents a quaternion.
 #[allow(missing_docs)]
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Quaternion {
     pub w: c_float,
@@ -599,7 +599,7 @@ impl Div<f32> for Quaternion {
 
 /// Represents a 3x3 matrix.
 #[allow(missing_docs)]
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Matrix3x3 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float,
@@ -656,7 +656,7 @@ impl Mul for Matrix3x3 {
 
 /// Represents a 4x4 matrix.
 #[allow(missing_docs)]
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Matrix4x4 {
     pub a1: c_float, pub a2: c_float, pub a3: c_float, pub a4: c_float,

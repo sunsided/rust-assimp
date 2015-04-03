@@ -4,7 +4,7 @@ use types::{Vector3D, Color3D, AiString};
 use libc::{c_float};
 
 /// Enumerates all supported types of light sources.
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(C)]
 pub enum LightType {
     /// An undefined light, not a valid value
@@ -45,7 +45,7 @@ pub enum LightType {
 /// called "<spotName>.Target". However, this is just additional information
 /// then, the transformation tracks of the main node make the
 /// spot light already point in the right direction.
-#[derive(Copy, Clone, PartialEq, Show)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C)]
 pub struct Light {
     /// The name of the light source.

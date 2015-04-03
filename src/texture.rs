@@ -22,7 +22,7 @@ use util::{ptr_to_slice};
 
 
 /// Helper structure to represent a texel in a ARGB8888 format
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(C, packed)]
 pub struct Texel {
     /// blue

@@ -1,7 +1,7 @@
 ///! Defines all the possible post processing steps.
 
 /// Post processing steps that can be applied once a model is loaded
-#[derive(Copy)]
+#[derive(Clone, Copy)]
 #[repr(C, u32)]
 pub enum Process {
     /// Calculates the tangents and bitangents for the imported meshes.
