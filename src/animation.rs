@@ -3,12 +3,12 @@
 use libc::{c_double, c_uint};
 use std::fmt;
 
-use util::{ptr_ptr_to_slice, ptr_to_slice};
-use types::{Vector3D, Quaternion, AiString};
+use crate::util::{ptr_ptr_to_slice, ptr_to_slice};
+use crate::{AiString, Quaternion, Vector3D};
 
 /// A time-value pair specifying a certain 3D vector for the given time.
 #[derive(Copy, Clone, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct VectorKey {
     /// The time of this key
     pub time: c_double,
@@ -21,19 +21,18 @@ pub struct VectorKey {
 ///
 /// Rotations are expressed with quaternions.
 #[derive(Copy, Clone, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct QuatKey {
     /// The time of this key
     pub time: c_double,
 
     /// The value of this key
     pub value: Quaternion,
-
 }
 
 /// Binds a anim mesh to a specific point in time.
 #[derive(Copy, Clone, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct MeshKey {
     /// The time of this key
     pub time: c_double,
@@ -49,23 +48,23 @@ pub struct MeshKey {
 ///
 /// This corresponds to NodeAnim::pre_state and NodeAnim::post_state.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum AnimBehaviour {
     /// The value from the default node transformation is taken
-    Default  = 0x0,
+    Default = 0x0,
 
     /// The nearest key value is used without interpolation
     Constant = 0x1,
 
     /// The value of the nearest two keys is linearly extrapolated
     /// for the current time value.
-    Linear   = 0x2,
+    Linear = 0x2,
 
     /// The animation is repeated.
     ///
     /// If the animation key go from n to m and the current
     /// time is `t`, use the value at `(t-n) % (|m-n|)`.
-    Repeat   = 0x3,
+    Repeat = 0x3,
 }
 
 /// Describes the animation of a single node.
@@ -84,7 +83,7 @@ pub enum AnimBehaviour {
 /// Duplicate keys don't pass the validation step. Most likely there
 /// will be no negative time values, but they are not forbidden also (so
 /// implementations need to cope with them! )
-#[repr(C)]
+
 pub struct NodeAnim {
     /// The name of the node affected by this animation. The node
     /// must exist and it must be unique.
@@ -171,7 +170,7 @@ impl NodeAnim {
 /// Mesh::anim_mesh array. The purpose of MeshAnim is to
 /// define keyframes linking each mesh attachment to a particular
 /// point in time.
-#[repr(C)]
+
 pub struct MeshAnim {
     /// Name of the mesh to be animated. An empty string is not allowed,
     /// animated meshes need to be named (not necessarily uniquely,
@@ -196,7 +195,7 @@ impl MeshAnim {
 /// An animation consists of keyframe data for a number of nodes.
 ///
 /// For each node affected by the animation a separate series of data is given.
-#[repr(C)]
+
 pub struct Animation {
     /// The name of the animation. If the modeling package this data was
     /// exported from does support only a single animation channel, this
@@ -211,19 +210,19 @@ pub struct Animation {
 
     /// The number of bone animation channels. Each channel affects
     /// a single node.
-    pub num_channels: c_uint ,
+    pub num_channels: c_uint,
 
     /// The node animation channels. Each channel affects a single node.
     /// The array is num_channels in size.
-    channels: *mut*mut NodeAnim,
+    channels: *mut *mut NodeAnim,
 
     /// The number of mesh animation channels. Each channel affects
     /// a single mesh and defines vertex-based animation.
-    pub num_mesh_channels: c_uint ,
+    pub num_mesh_channels: c_uint,
 
     /// The mesh animation channels. Each channel affects a single mesh.
     /// The array is num_mesh_channels in size.
-    mesh_channels: *mut*mut MeshAnim,
+    mesh_channels: *mut *mut MeshAnim,
 }
 
 impl<'a> Animation {
@@ -234,45 +233,43 @@ impl<'a> Animation {
 
     /// The mesh animation channels. Each channel affects a single mesh.
     pub fn get_mesh_channels(&self) -> &[&MeshAnim] {
-        unsafe { ptr_ptr_to_slice(self.mesh_channels,
-                                  self.num_mesh_channels as usize) }
+        unsafe { ptr_ptr_to_slice(self.mesh_channels, self.num_mesh_channels as usize) }
     }
 
     /// Find the `NodeAnim` with the name `name` in this `Animation`
     pub fn find_node_anim(&'a self, name: &AiString) -> Option<&'a NodeAnim> {
         for node in self.get_channels().iter() {
             if node.name == *name {
-                return Some(*node)
+                return Some(*node);
             }
         }
-        return None
+        return None;
     }
 
     /// Find the `MeshAnim` with the name `name` in this `Animation`
     pub fn find_mesh_anim(&'a self, name: &AiString) -> Option<&'a MeshAnim> {
         for node in self.get_mesh_channels().iter() {
             if node.name == *name {
-                return Some(*node)
+                return Some(*node);
             }
         }
-        return None
+        return None;
     }
 }
 
 impl<'a> fmt::Display for Animation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Animation {{ \
+        write!(
+            f,
+            "Animation {{ \
         name: {}, \
         duration: {}, \
         ticks_per_sec: {}, \
         num_channels: {}, \
         num_mesh_channels: {} \
         }}",
-        self.name,
-        self.duration,
-        self.ticks_per_sec,
-        self.num_channels,
-        self.num_mesh_channels)
+            self.name, self.duration, self.ticks_per_sec, self.num_channels, self.num_mesh_channels
+        )
     }
 }
 

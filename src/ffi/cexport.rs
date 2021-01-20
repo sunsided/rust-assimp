@@ -1,11 +1,12 @@
 //! The assimp export interface
 
-use libc::{c_char, size_t, c_uint, c_void};
+use libc::{c_char, c_uint, c_void, size_t};
 
-use types::{AiString, Return};
 // use ffi::rawscene::RawScene;
-use scene::RawScene;
-use fileio::{AiFileIO};
+use crate::fileio::AiFileIO;
+use crate::scene::RawScene;
+use crate::types::Return;
+use crate::AiString;
 
 /// Describes an file format which Assimp can export to.
 /// Use #aiGetExportFormatCount() to
@@ -13,7 +14,7 @@ use fileio::{AiFileIO};
 /// learn how many export formats the current Assimp build supports and
 /// #aiGetExportFormatDescription() to retrieve a description of an export
 /// format option.
-#[repr(C)]
+
 struct ExportFormatDesc {
     /// a short string ID to uniquely identify the export format. Use this ID
     /// string to specify which file format you want to export to when calling
@@ -40,7 +41,7 @@ struct ExportFormatDesc {
 /// turn reference another blob and so on.  This is used when exporters write
 /// more than one output file for a given #aiScene. See the remarks for
 /// #aiExportDataBlob::name for more information.
-#[repr(C)]
+
 struct RawExportDataBlob {
     /// Size of the data in bytes
     pub size: size_t,
@@ -61,7 +62,7 @@ struct RawExportDataBlob {
     pub name: AiString,
 
     /// Pointer to the next blob in the chain or NULL if there is none.
-    next: *const RawExportDataBlob
+    next: *const RawExportDataBlob,
 }
 
 struct ExportDataBlob {
@@ -74,7 +75,7 @@ impl Drop for ExportDataBlob {
     }
 }
 
-extern {
+extern "C" {
     /// Returns the number of export file formats available in the current
     /// Assimp build.
     /// Use aiGetExportFormatDescription() to retrieve infos of a specific
@@ -105,7 +106,7 @@ extern {
     ///
     /// * `in` Valid scene to be copied
     /// * `out` Receives a modifyable copy of the scene.
-    pub fn aiCopyScene(input: *const RawScene, output: *mut*mut RawScene);
+    pub fn aiCopyScene(input: *const RawScene, output: *mut *mut RawScene);
 
     /// Exports the given scene to a chosen file format and writes the result
     /// file(s) to disk.
@@ -157,19 +158,18 @@ extern {
     ///      run the step anyway.
     ///
     /// Returns a status code indicating the result of the export
-    pub fn aiExportScene( scene: *const RawScene,
-                      formatId: *const c_char,
-                      file_name: *const c_char,
-                      preprocessing: c_uint)
-                      -> Return;
-
+    pub fn aiExportScene(
+        scene: *const RawScene,
+        formatId: *const c_char,
+        file_name: *const c_char,
+        preprocessing: c_uint,
+    ) -> Return;
 
     /// Releases the memory associated with the given exported data. Use this function to free a data blob
     /// returned by aiExportScene().
     ///
     /// data the data blob returned by #aiExportSceneToBlob
     pub fn aiReleaseExportBlob(data: *const RawExportDataBlob);
-
 
     /// Exports the given scene to a chosen file format using custom IO logic supplied by you.
     /// * pScene The scene to export. Stays in possession of the caller, is not changed by the function.
@@ -182,12 +182,13 @@ extern {
     /// * pPreprocessing Please see the documentation for #aiExportScene
     ///
     /// Returns a status code indicating the result of the export
-    pub fn aiExportSceneEx( scene: *const RawScene,
-                        format_id: *const c_char,
-                        file_name: *const c_char,
-                        file_io: *mut AiFileIO,
-                        preprocessing: c_uint )
-                        -> Return;
+    pub fn aiExportSceneEx(
+        scene: *const RawScene,
+        format_id: *const c_char,
+        file_name: *const c_char,
+        file_io: *mut AiFileIO,
+        preprocessing: c_uint,
+    ) -> Return;
 
     ///  Exports the given scene to a chosen file format.
     ///
@@ -201,8 +202,9 @@ extern {
     ///  which export formats are available.  @param pPreprocessing Please see
     ///  the documentation for #aiExportScene @return the exported data or
     ///  NULL in case of error
-    pub fn aiExportSceneToBlob( scene: *const RawScene,
-                            format_id: *const c_char,
-                            preprocessing: c_uint )
-                            -> *const RawExportDataBlob;
+    pub fn aiExportSceneToBlob(
+        scene: *const RawScene,
+        format_id: *const c_char,
+        preprocessing: c_uint,
+    ) -> *const RawExportDataBlob;
 }

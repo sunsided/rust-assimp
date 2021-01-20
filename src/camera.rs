@@ -1,7 +1,7 @@
 //! Defines the Camera data structure
 
-use types::{Vector3D, AiString};
-use libc::{c_float};
+use crate::{AiString, Vector3D};
+use libc::c_float;
 
 /// Helper structure to describe a virtual camera.
 ///
@@ -45,7 +45,7 @@ use libc::{c_float};
 /// then the transformation tracks of the camera main node make the
 /// camera already look in the right direction.
 #[derive(Clone, Copy, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct Camera {
     /// The name of the camera.
     ///

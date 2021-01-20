@@ -1,10 +1,11 @@
 [package]
 name = "rust-assimp"
 version = "0.0.1-alpha.2"
-authors = ["Jeremy Croft <jemcroft@gmail.com>"]
+authors = ["Markus Mayer <widemeadows@gmail.com>", "Jeremy Croft <jemcroft@gmail.com>"]
+edition = "2018"
 
 description = "A rust wrapper for assimp the open asset import library"
-documentation = "http://www.rust-ci.org/jemcroft/rust-assimp/doc/assimp/"
+documentation = "http://www.rust-ci.org/sunsided/rust-assimp/doc/assimp/"
 keywords = ["3d", "model", "importer", "assimp", "binding"]
 repository = "https://github.com/jemcroft/rust-assimp"
 readme = "README.md"
@@ -14,5 +15,6 @@ license = "MIT"
 name = "assimp"
 path = "./src/lib.rs"
 
-[dependencies.vecmath]
-git = "https://github.com/PistonDevelopers/vecmath"
+[dependencies]
+libc = "0.2.82"
+vecmath = "1.0.0"

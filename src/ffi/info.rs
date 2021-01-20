@@ -2,10 +2,10 @@
 
 use libc::{c_char, c_uint};
 
-use types::{AiBool, AiString};
+use crate::types::{AiBool, AiString};
 
 #[link(name = "assimp")]
-extern {
+extern "C" {
     pub fn aiGetLegalString() -> *const c_char;
 
     pub fn aiGetVersionMinor() -> c_uint;

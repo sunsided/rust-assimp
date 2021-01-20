@@ -5,9 +5,9 @@
 //! pixels, and "compressed" textures, which are stored in a file format
 //! such as PNG or TGA.
 
-use libc::{c_uchar, c_char, c_uint};
+use libc::{c_char, c_uchar, c_uint};
 
-use util::{ptr_to_slice};
+use crate::util::ptr_to_slice;
 
 // /// @def AI_MAKE_EMBEDDED_TEXNAME
 // ///
@@ -19,7 +19,6 @@ use util::{ptr_to_slice};
 // #if (!defined AI_MAKE_EMBEDDED_TEXNAME)
 // #	define AI_MAKE_EMBEDDED_TEXNAME(_n_) "*" # _n_
 // #endif
-
 
 /// Helper structure to represent a texel in a ARGB8888 format
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -46,7 +45,7 @@ pub struct Texel {
 /// 2. Compressed textures stored in a file format like png or jpg. The raw
 ///    file bytes are given so the application must utilize an image decoder
 ///    to get access to the actual color data.
-#[repr(C)] // not packed
+// not packed
 pub struct Texture {
     /// Width of the texture, in pixels
     ///
@@ -83,7 +82,7 @@ pub struct Texture {
     /// buffer of size mWidth containing the compressed texture
     /// data. Good luck, have fun!
     ///
-    pc_data: *mut Texel
+    pc_data: *mut Texel,
 }
 
 /// Texture data can be encoded or decoded
@@ -102,7 +101,7 @@ pub enum TextureData<'a> {
         /// The height of the texture data in texels
         height: u32,
         /// A linear array store the texels in the texture
-        data: &'a [Texel]
+        data: &'a [Texel],
     },
 }
 
@@ -110,21 +109,17 @@ impl Texture {
     /// Get the embeded texture data
     pub fn get_texture_data(&self) -> TextureData {
         if self.height == 0 {
-            let data = unsafe {
-                ptr_to_slice(self.pc_data as *mut u8, self.width as usize)
-            };
+            let data = unsafe { ptr_to_slice(self.pc_data as *mut u8, self.width as usize) };
             TextureData::Encoded {
                 len: self.width,
-                data: data,
+                data,
             }
         } else {
-            let data = unsafe {
-                ptr_to_slice(self.pc_data, (self.width * self.height) as usize)
-            };
+            let data = unsafe { ptr_to_slice(self.pc_data, (self.width * self.height) as usize) };
             TextureData::Decoded {
                 width: self.width,
                 height: self.height,
-                data: data,
+                data,
             }
         }
     }

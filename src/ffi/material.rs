@@ -1,7 +1,5 @@
-
-use libc::{c_uint, c_float};
-use types;
-use material;
+use crate::{material, types};
+use libc::{c_float, c_uint};
 
 /// brief Helper function to get all values pertaining to a particular
 ///   texture slot from a material structure.
@@ -45,15 +43,17 @@ use material;
 //                                      C_ENUM aiTextureMapMode* mapmode    /*= NULL*/,
 //                                      unsigned int* flags                 /*= NULL*/);
 
-extern {
-    pub fn aiGetMaterialTexture(aiMaterial: *const material::Material,
-                             aiTextureType: material::TextureType,
-                             index: c_uint,
-                             path: *mut types::AiString,
-                             mapping: *mut material::TextureMapping /*= NULL*/,
-                             uvindex: *mut c_uint            /*= NULL*/,
-                             blend: *mut c_float                    /*= NULL*/,
-                             op: *mut material::TextureOp           /*= NULL*/,
-                             mapmode: *mut material::TextureMapMode /*= NULL*/,
-                             flags: *mut c_uint              /*= NULL*/) -> types::Return;
+extern "C" {
+    pub fn aiGetMaterialTexture(
+        aiMaterial: *const material::Material,
+        aiTextureType: material::TextureType,
+        index: c_uint,
+        path: *mut types::AiString,
+        mapping: *mut material::TextureMapping, /*= NULL*/
+        uvindex: *mut c_uint,                   /*= NULL*/
+        blend: *mut c_float,                    /*= NULL*/
+        op: *mut material::TextureOp,           /*= NULL*/
+        mapmode: *mut material::TextureMapMode, /*= NULL*/
+        flags: *mut c_uint,                     /*= NULL*/
+    ) -> types::Return;
 }

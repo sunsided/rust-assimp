@@ -2,7 +2,7 @@
 
 /// Post processing steps that can be applied once a model is loaded
 #[derive(Clone, Copy)]
-#[repr(C, u32)]
+#[repr(C)]
 pub enum Process {
     /// Calculates the tangents and bitangents for the imported meshes.
     ///
@@ -344,8 +344,7 @@ pub enum Process {
     /// together with `Process::OptimizeGraph`, if possible. The flag is fully
     /// compatible with both `Process::SplitLargeMeshes and
     /// `Process::SortByPType`.
-    OptimizeMeshes  = 0x200000,
-
+    OptimizeMeshes = 0x200000,
 
     /// A postprocessing step to optimize the scene hierarchy.
     ///
@@ -373,7 +372,7 @@ pub enum Process {
     /// `Process::OptimizeMeshes` in combination with
     /// `Process::OptimizeGraph` usually fixes them all and makes them
     /// renderable.
-    OptimizeGraph  = 0x400000,
+    OptimizeGraph = 0x400000,
 
     /// This step flips all UV coordinates along the y-axis and adjusts
     /// material settings and bitangents accordingly.
@@ -397,11 +396,11 @@ pub enum Process {
     /// This step adjusts the output face winding order to be CW.
     ///
     /// The default face winding order is counter clockwise (CCW).
-    FlipWindingOrder  = 0x1000000,
+    FlipWindingOrder = 0x1000000,
 
     /// This step splits meshes with many bones into sub-meshes so that each
     /// su-bmesh has fewer or as many bones as a given limit.
-    SplitByBoneCount  = 0x2000000,
+    SplitByBoneCount = 0x2000000,
 
     /// This step removes bones losslessly or according to some threshold.
     ///
@@ -414,8 +413,7 @@ pub enum Process {
     /// * Use `Property::PP_DB_THRESHOLD` to control this.
     /// * Use `Property::PP_DB_ALL_OR_NONE` if you want bones removed if and
     ///   only if all bones within the scene qualify for removal.
-    Debone  = 0x4000000,
-
+    Debone = 0x4000000,
 
     /// Shortcut flag for Direct3D-based applications.
     ///
@@ -425,7 +423,6 @@ pub enum Process {
     /// and finally clockwise face order, suitable for CCW culling.
     #[deprecated]
     ConvertToLeftHanded = 0x1800004,
-
 
     /// Default postprocess configuration optimizing the data for real-time
     /// rendering.
@@ -496,48 +493,48 @@ pub enum Process {
 #[cfg(test)]
 mod test {
     use super::Process;
-    pub const PROCESS_CONVERTTOLEFTHANDED_TEST : u32 =
-                                Process::MakeLeftHanded   as u32 |
-                                Process::FlipWindingOrder as u32 |
-                                Process::FlipUVs          as u32 ;
-    pub const PROCESSPRESET_TARGETREALTIME_FAST_TEST : u32 =
-                                Process::CalcTangentSpace       as u32 |
-                                Process::GenNormals             as u32 |
-                                Process::JoinIdenticalVertices  as u32 |
-                                Process::Triangulate            as u32 |
-                                Process::GenUVCoords            as u32 |
-                                Process::SortByPType            as u32 ;
-    pub const PROCESSPRESET_TARGETREALTIME_QUALITY_TEST : u32 =
-                                Process::CalcTangentSpace          as u32 |
-                                Process::GenSmoothNormals          as u32 |
-                                Process::JoinIdenticalVertices     as u32 |
-                                Process::ImproveCacheLocality      as u32 |
-                                Process::LimitBoneWeights          as u32 |
-                                Process::RemoveRedundantMaterials  as u32 |
-                                Process::SplitLargeMeshes          as u32 |
-                                Process::Triangulate               as u32 |
-                                Process::GenUVCoords               as u32 |
-                                Process::SortByPType               as u32 |
-                                Process::FindDegenerates           as u32 |
-                                Process::FindInvalidData           as u32 ;
-    pub const PROCESSPRESET_TARGETREALTIME_MAXQUALITY_TEST : u32 =
-                            Process::Preset_TargetRealtime_Quality as u32 |
-                            Process::FindInstances                 as u32 |
-                            Process::ValidateDataStructure         as u32 |
-                            Process::OptimizeMeshes                as u32 |
-                            Process::Debone                        as u32 ;
+    pub const PROCESS_CONVERTTOLEFTHANDED_TEST: u32 =
+        Process::MakeLeftHanded as u32 | Process::FlipWindingOrder as u32 | Process::FlipUVs as u32;
+    pub const PROCESSPRESET_TARGETREALTIME_FAST_TEST: u32 = Process::CalcTangentSpace as u32
+        | Process::GenNormals as u32
+        | Process::JoinIdenticalVertices as u32
+        | Process::Triangulate as u32
+        | Process::GenUVCoords as u32
+        | Process::SortByPType as u32;
+    pub const PROCESSPRESET_TARGETREALTIME_QUALITY_TEST: u32 = Process::CalcTangentSpace as u32
+        | Process::GenSmoothNormals as u32
+        | Process::JoinIdenticalVertices as u32
+        | Process::ImproveCacheLocality as u32
+        | Process::LimitBoneWeights as u32
+        | Process::RemoveRedundantMaterials as u32
+        | Process::SplitLargeMeshes as u32
+        | Process::Triangulate as u32
+        | Process::GenUVCoords as u32
+        | Process::SortByPType as u32
+        | Process::FindDegenerates as u32
+        | Process::FindInvalidData as u32;
+    pub const PROCESSPRESET_TARGETREALTIME_MAXQUALITY_TEST: u32 =
+        Process::Preset_TargetRealtime_Quality as u32
+            | Process::FindInstances as u32
+            | Process::ValidateDataStructure as u32
+            | Process::OptimizeMeshes as u32
+            | Process::Debone as u32;
     // Used to genearte the values used in the enum
     #[allow(deprecated)]
     #[test]
     fn test_show_consts() {
-        assert!(Process::ConvertToLeftHanded as u32 ==
-                   PROCESS_CONVERTTOLEFTHANDED_TEST);
-        assert!(Process::Preset_TargetRealtime_MaxQuality as u32 ==
-                   PROCESSPRESET_TARGETREALTIME_MAXQUALITY_TEST);
-        assert!(Process::Preset_TargetRealtime_Quality as u32 ==
-                   PROCESSPRESET_TARGETREALTIME_QUALITY_TEST);
-        assert!(Process::Preset_TargetRealtime_Fast as u32 ==
-                   PROCESSPRESET_TARGETREALTIME_FAST_TEST);
+        assert!(Process::ConvertToLeftHanded as u32 == PROCESS_CONVERTTOLEFTHANDED_TEST);
+        assert!(
+            Process::Preset_TargetRealtime_MaxQuality as u32
+                == PROCESSPRESET_TARGETREALTIME_MAXQUALITY_TEST
+        );
+        assert!(
+            Process::Preset_TargetRealtime_Quality as u32
+                == PROCESSPRESET_TARGETREALTIME_QUALITY_TEST
+        );
+        assert!(
+            Process::Preset_TargetRealtime_Fast as u32 == PROCESSPRESET_TARGETREALTIME_FAST_TEST
+        );
     }
 }
 

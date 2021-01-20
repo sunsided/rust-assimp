@@ -1,11 +1,12 @@
 //! Defines the material system of the library
 
-use libc::{c_uchar, c_uint, c_float};
-use std::{ptr, mem};
+use libc::{c_float, c_uchar, c_uint};
+use std::{mem, ptr};
 
-use types::{Vector2D, AiString, Return};
-use util::{ptr_ptr_to_slice, ptr_to_slice};
-use ffi;
+use crate::ffi;
+use crate::types::Return;
+use crate::util::{ptr_ptr_to_slice, ptr_to_slice};
+use crate::{AiString, Vector2D};
 
 // /// Name for default materials (2nd is used if meshes have UV coords)
 // const AI_DEFAULT_MATERIAL_NAME : &'static str = "DefaultMaterial"
@@ -24,13 +25,13 @@ use ffi;
 /// Written as equation, the final diffuse term for a specific pixel would be:
 ///
 /// ```math
-/// diffFinal = DiffColor0 * sampleTex(DiffTexture0,UV0) + 
+/// diffFinal = DiffColor0 * sampleTex(DiffTexture0,UV0) +
 ///         sampleTex(DiffTexture1,UV0) * diffContrib;
 /// ```
 ///
 /// where `diffContrib` is the intensity of the incoming light for that pixel.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum TextureOp {
     /// T = T1 * T2
     Multiply = 0x0,
@@ -55,7 +56,7 @@ pub enum TextureOp {
 ///
 /// Commonly refered to as 'wrapping mode'.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum TextureMapMode {
     /// A texture coordinate `(u, v)` is translated to `(u % 1, v % 1)`
     Wrap = 0x0,
@@ -83,7 +84,7 @@ pub enum TextureMapMode {
 /// how the mapping should look like (e.g spherical) is given.
 /// See the #AI_MATKEY_MAPPING property for more details.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum TextureMapping {
     /// The mapping coordinates are taken from an UV channel.
     ///
@@ -122,7 +123,7 @@ pub enum TextureMapping {
 /// and the artists working on models have to conform to this specification,
 /// regardless which 3D tool they're using.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum TextureType {
     /// Dummy value.
     ///
@@ -199,7 +200,7 @@ pub enum TextureType {
     Unknown = 0xC,
 }
 
-pub const AI_TEXTURE_TYPE_MAX : u32 = TextureType::Unknown as u32;
+pub const AI_TEXTURE_TYPE_MAX: u32 = TextureType::Unknown as u32;
 
 /// Defines all shading models supported by the library
 ///
@@ -213,7 +214,7 @@ pub const AI_TEXTURE_TYPE_MAX : u32 = TextureType::Unknown as u32;
 /// most common implementation matches the original rendering results of the
 /// 3D modeller which wrote a particular model as closely as possible.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum ShadingMode {
     /// Flat shading. Shading is done on per-face base, diffuse only.
     ///
@@ -221,13 +222,13 @@ pub enum ShadingMode {
     Flat = 0x1,
 
     /// Simple Gouraud shading.
-    Gouraud =   0x2,
+    Gouraud = 0x2,
 
     /// Phong-Shading
     Phong = 0x3,
 
     /// Phong-Blinn-Shading
-    Blinn   = 0x4,
+    Blinn = 0x4,
 
     /// Toon-Shading per pixel. Also known as 'comic' shader.
     Toon = 0x5,
@@ -264,7 +265,7 @@ pub enum ShadingMode {
 ///
 /// This corresponds to the #AI_MATKEY_TEXFLAGS property.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum TextureFlags {
     /// The texture's color values have to be inverted (componentwise 1-n)
     Invert = 0x1,
@@ -286,7 +287,6 @@ pub enum TextureFlags {
     IgnoreAlpha = 0x4,
 }
 
-
 /// Defines alpha-blend flags.
 ///
 /// If you're familiar with OpenGL or D3D, these flags aren't new to you.
@@ -305,7 +305,7 @@ pub enum TextureFlags {
 /// This corresponds to the #AI_MATKEY_BLEND_FUNC property.
 ///
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum BlendMode {
     /// Formula: `SourceColor*SourceAlpha + DestColor*(1-SourceAlpha)`
     Default = 0x0,
@@ -341,21 +341,21 @@ pub struct UVTransform {
 
 /// A very primitive RTTI system for the contents of material properties.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum PropertyTypeInfo {
     /// Array of single-precision (32 Bit) floats
     ///
     /// It is possible to use aiGetMaterialInteger[Array]() (or the C++-API
     /// Material::Get()) to query properties stored in floating-point format.
     /// The material system performs the type conversion automatically.
-    PtiFloat   = 0x1,
+    PtiFloat = 0x1,
 
     /// The material property is an AiString.
     ///
     /// Arrays of strings aren't possible, aiGetMaterialString() (or the
     /// C++-API aiMaterial::Get()) *must* be used to query a string property.
     ///
-    PtiString  = 0x3,
+    PtiString = 0x3,
 
     ///  Array of (32 Bit) integers
     ///
@@ -366,7 +366,7 @@ pub enum PropertyTypeInfo {
     PtiInteger = 0x4,
 
     /// Simple binary buffer, content undefined. Not convertible to anything.
-    PtiBuffer  = 0x5,
+    PtiBuffer = 0x5,
 }
 
 /// Data structure for a single material property
@@ -389,7 +389,7 @@ pub enum PropertyTypeInfo {
 ///      A temporary property for internal use.
 /// ```
 /// see Material
-#[repr(C)]
+
 pub struct MaterialProperty {
     /// Specifies the name of the property (key)
     /// Keys are generally case insensitive.
@@ -431,7 +431,6 @@ impl MaterialProperty {
     pub fn get_data(&self) -> &[u8] {
         unsafe { ptr_to_slice(self.data, self.data_length as usize) }
     }
-
 }
 
 /// Data structure for a material
@@ -441,10 +440,10 @@ impl MaterialProperty {
 /// member functions of aiMaterial to process material properties, C users
 /// have to stick with the aiMaterialGetXXX family of unbound functions.
 /// The library defines a set of standard keys (AI_MATKEY_XXX).
-#[repr(C)]
+
 pub struct Material {
     /// List of all material properties loaded.
-    properties: *mut*mut MaterialProperty,
+    properties: *mut *mut MaterialProperty,
 
     /// Number of properties in the data base.
     pub num_properties: c_uint,
@@ -461,10 +460,7 @@ impl Material {
 
     /// Get the path of the texture
     // TODO make a nicer interface to this information
-    pub fn get_texture(&self,
-                       tex_type: TextureType,
-                       index: usize,
-                       ) -> Option<String> {
+    pub fn get_texture(&self, tex_type: TextureType, index: usize) -> Option<String> {
         unsafe {
             // aiGetMaterialTexture(aiMaterial: *const material::Material,
             //                      aiTextureType: material::TextureType,
@@ -477,26 +473,26 @@ impl Material {
             //                      mapmode: *mut material::TextureMapMode /*= NULL*/,
             //                      flags: *mut c_uint              /*= NULL*/) -> types::Return;
             let mut path: AiString = mem::uninitialized();
-            let res = ffi::aiGetMaterialTexture(self,
-                                 tex_type,
-                                 index as c_uint,
-                                 &mut path,
-                                 ptr::null_mut(),
-                                 ptr::null_mut(),
-                                 ptr::null_mut(),
-                                 ptr::null_mut(),
-                                 ptr::null_mut(),
-                                 ptr::null_mut(),
-                                );
+            let res = ffi::aiGetMaterialTexture(
+                self,
+                tex_type,
+                index as c_uint,
+                &mut path,
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ptr::null_mut(),
+            );
             match res {
-                Return::Success => { },
+                Return::Success => {}
                 _ => return None,
             }
             path.into_string()
         }
     }
 }
-
 
 // #define AI_MATKEY_NAME "?mat.name",0,0
 // #define AI_MATKEY_TWOSIDED "$mat.twosided",0,0
@@ -965,11 +961,9 @@ impl Material {
 //         float* pOut,
 //         unsigned int* pMax);
 
-
 //     // Use our friend, the C preprocessor
 // #define aiGetMaterialFloat (pMat, type, index, pKey, pOut) \
 //     aiGetMaterialFloatArray(pMat, type, index, pKey, pOut, NULL)
-
 
 //         /** @brief Retrieve an array of integer values with a specific key
 //          *  from a material
@@ -982,12 +976,9 @@ impl Material {
 //                                                          int* pOut,
 //                                                          unsigned int* pMax);
 
-
 //     // use our friend, the C preprocessor
 // #define aiGetMaterialInteger (pMat, type, index, pKey, pOut) \
 //     aiGetMaterialIntegerArray(pMat, type, index, pKey, pOut, NULL)
-
-
 
 //         /** @brief Retrieve a color value from the material property table
 //          *
@@ -997,7 +988,6 @@ impl Material {
 //                                                   unsigned int type,
 //                                                   unsigned int index,
 //                                                   C_STRUCT aiColor4D* pOut);
-
 
 //         /** @brief Retrieve a string from the material property table
 //          *
@@ -1015,6 +1005,5 @@ impl Material {
 //          *  @note A texture can be easily queried using #aiGetMaterialTexture() */
 //     ASSIMP_API unsigned int aiGetMaterialTextureCount(const C_STRUCT aiMaterial* pMat,
 //                                                       C_ENUM aiTextureType type);
-
 
 // vim: et tw=78 sw=4:

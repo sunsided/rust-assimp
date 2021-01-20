@@ -1,7 +1,7 @@
 //! Defines all the available importer properties.
 
-use mesh::PrimitiveType;
-use types::AiString;
+use crate::mesh::PrimitiveType;
+use crate::AiString;
 
 /// Properties that can be used to refine the behaviour of the importer.
 #[allow(non_camel_case_types)]
@@ -461,7 +461,7 @@ pub enum Property<'a> {
 
 /// Options for the `Process::TransformUVCoords` post processing step
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C, u32)]
+#[repr(C)]
 pub enum TransformUV {
     /// Scale UV coordinates
     Scaling = 0x1,
@@ -490,13 +490,12 @@ pub enum TransformUV {
 // // Remove a specific UV channel 'n'
 // #define Component_TEXCOORDSn(n) (1u << (n+25u))
 
-
 /// Components of the `Scene` and `Mesh` data structures that can be excluded
 /// from the import using the `Propcess_RemoveComponent` step.
 ///
 /// See the documentation to `Process::RemoveComponent` for more details.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C, u32)]
+#[repr(C)]
 pub enum Component {
     /// Normal vectors
     Normals = 0x2,
@@ -551,19 +550,19 @@ pub enum Component {
 
 #[cfg(untrue)]
 mod todo {
-    pub const SBBC_DEFAULT_MAX_BONES : u32 = 60;
+    pub const SBBC_DEFAULT_MAX_BONES: u32 = 60;
 
-    pub const SLM_DEFAULT_MAX_TRIANGLES : u32 = 1000000;
+    pub const SLM_DEFAULT_MAX_TRIANGLES: u32 = 1000000;
 
-    pub const SLM_DEFAULT_MAX_VERTICES : u32 = 1000000;
+    pub const SLM_DEFAULT_MAX_VERTICES: u32 = 1000000;
 
     // default value for AI_CONFIG_PP_LBW_MAX_WEIGHTS
-    pub const LMW_MAX_WEIGHTS : u32 = 0x4;
+    pub const LMW_MAX_WEIGHTS: u32 = 0x4;
 
-    pub const DEBONE_THRESHOLD : f32 = 1.0;
+    pub const DEBONE_THRESHOLD: f32 = 1.0;
 
     // Default value for the #PP_ICL_PTCACHE_SIZE property
-    pub const ICL_PTCACHE_SIZE : u32 = 12;
+    pub const ICL_PTCACHE_SIZE: u32 = 12;
 }
 
 // ###########################################################################

@@ -1,8 +1,7 @@
-
-use types::{Matrix3x3, Matrix4x4, Quaternion};
+use crate::{Matrix3x3, Matrix4x4, Quaternion};
 
 //TODO implement these in rust
-extern {
+extern "C" {
     ///  Construct a quaternion from a 3x3 rotation matrix.
     ///
     /// * param quat Receives the output quaternion.
@@ -15,21 +14,20 @@ extern {
     //     const C_STRUCT aiMatrix3x3* mat);
     pub fn aiCreateQuaternionFromMatrix(quat: *mut Quaternion, mat: *const Matrix3x3);
 
-        // /** Decompose a transformation matrix into its rotational, translational and
-        // *  scaling components.
-        // *
-        // * @param mat Matrix to decompose
-        // * @param scaling Receives the scaling component
-        // * @param rotation Receives the rotational component
-        // * @param position Receives the translational component.
-        // * @see aiMatrix4x4::Decompose (aiVector3D&, aiQuaternion&, aiVector3D&) const;
-        // */
-        // // ASSIMP_API void aiDecomposeMatrix(
-        // //     const C_STRUCT aiMatrix4x4* mat,
-        // //     C_STRUCT aiVector3D* scaling,
-        // //     C_STRUCT aiQuaternion* rotation,
-        // //     C_STRUCT aiVector3D* position);
-
+    // /** Decompose a transformation matrix into its rotational, translational and
+    // *  scaling components.
+    // *
+    // * @param mat Matrix to decompose
+    // * @param scaling Receives the scaling component
+    // * @param rotation Receives the rotational component
+    // * @param position Receives the translational component.
+    // * @see aiMatrix4x4::Decompose (aiVector3D&, aiQuaternion&, aiVector3D&) const;
+    // */
+    // // ASSIMP_API void aiDecomposeMatrix(
+    // //     const C_STRUCT aiMatrix4x4* mat,
+    // //     C_STRUCT aiVector3D* scaling,
+    // //     C_STRUCT aiQuaternion* rotation,
+    // //     C_STRUCT aiVector3D* position);
 
     /// Transpose a 3x3 matrix.
     /// *param mat Pointer to the matrix to be transposed
@@ -76,13 +74,13 @@ extern {
     //     const C_STRUCT aiMatrix3x3* src);
     pub fn aiMultiplyMatrix3(dest: *mut Matrix3x3, src: *const Matrix3x3);
 
-    // /** Get a 3x3 identity matrix.//{{{
-    // *  @param mat Matrix to receive its personal identity
-    // */
-    // // ASSIMP_API void aiIdentityMatrix3( C_STRUCT aiMatrix3x3* mat);
+// /** Get a 3x3 identity matrix.//{{{
+// *  @param mat Matrix to receive its personal identity
+// */
+// // ASSIMP_API void aiIdentityMatrix3( C_STRUCT aiMatrix3x3* mat);
 
-    // /** Get a 4x4 identity matrix.
-    // *  @param mat Matrix to receive its personal identity
-    // */
-    // // ASSIMP_API void aiIdentityMatrix4( C_STRUCT aiMatrix4x4* mat);//}}}
+// /** Get a 4x4 identity matrix.
+// *  @param mat Matrix to receive its personal identity
+// */
+// // ASSIMP_API void aiIdentityMatrix4( C_STRUCT aiMatrix4x4* mat);//}}}
 }

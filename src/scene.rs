@@ -1,19 +1,19 @@
 //! Defines the data structures in which the imported scene is returned.
 
 use libc::{c_uint, c_void};
-use std::mem;
 use std::fmt;
+use std::mem;
 
-use animation::Animation;
-use camera::Camera;
-use light::Light;
-use material::Material;
-use mesh::Mesh;
-use texture::Texture;
-use types::{Matrix4x4, AiString, MemoryInfo};
-use util::{ptr_ptr_to_slice, ptr_to_slice};
-use postprocess::Process;
-use ffi;
+use crate::animation::Animation;
+use crate::camera::Camera;
+use crate::ffi;
+use crate::light::Light;
+use crate::material::Material;
+use crate::mesh::Mesh;
+use crate::postprocess::Process;
+use crate::texture::Texture;
+use crate::types::{AiString, Matrix4x4, MemoryInfo};
+use crate::util::{ptr_ptr_to_slice, ptr_to_slice};
 
 /// A node in the imported hierarchy.
 ///
@@ -21,7 +21,7 @@ use ffi;
 /// a transformation relative to its parent and possibly several child nodes.
 /// Simple file formats don't support hierarchical structures - for these formats
 /// the imported scene does consist of only a single root node without children.
-#[repr(C)]
+
 pub struct Node {
     /// The name of the node.
     ///
@@ -48,7 +48,7 @@ pub struct Node {
     pub num_children: c_uint,
 
     /// The child nodes of this node. NULL if mNumChildren is 0.
-    children: *mut*mut Node,
+    children: *mut *mut Node,
 
     /// The number of meshes of this node.
     pub num_meshes: c_uint,
@@ -63,9 +63,7 @@ impl Node {
         if self.parent.is_null() {
             None
         } else {
-            unsafe {
-                Some(&*self.parent)
-            }
+            unsafe { Some(&*self.parent) }
         }
     }
 
@@ -80,10 +78,9 @@ impl Node {
     }
 }
 
-
 /// Flags to check the completeness of an imported scene.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C, u32)]
+#[repr(C)]
 pub enum SceneFlags {
     /// Specifies that the scene data structure that was imported is not
     /// complete.
@@ -138,7 +135,7 @@ pub enum SceneFlags {
 /// Objects of this class are generally maintained and owned by Assimp, not
 /// by the caller. You shouldn't want to instance it, nor should you ever try to
 /// delete a given scene on your own.
-#[repr(C)]
+
 pub struct RawScene {
     /// Any combination of the AI_SCENE_FLAGS_XXX flags.
     ///
@@ -163,7 +160,7 @@ pub struct RawScene {
     /// this array. The array is mNumMeshes in size. If the
     /// AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     /// be at least ONE material.
-    pub meshes: *mut*mut Mesh,
+    pub meshes: *mut *mut Mesh,
 
     /// The number of materials in the scene.
     pub num_materials: c_uint,
@@ -174,7 +171,7 @@ pub struct RawScene {
     /// array. The array is mNumMaterials in size. If the
     /// AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     /// be at least ONE material.
-    pub materials: *mut*mut Material,
+    pub materials: *mut *mut Material,
 
     /// The number of animations in the scene.
     pub num_animations: c_uint,
@@ -183,7 +180,7 @@ pub struct RawScene {
     ///
     /// All animations imported from the given file are listed here.
     /// The array is mNumAnimations in size.
-    pub animations: *mut*mut Animation,
+    pub animations: *mut *mut Animation,
 
     /// The number of textures embedded into the file
     pub num_textures: c_uint,
@@ -193,7 +190,7 @@ pub struct RawScene {
     /// Not many file formats embed their textures into the file.
     /// An example is Quake's MDL format (which is also used by
     /// some GameStudio versions)
-    pub textures: *mut*mut Texture,
+    pub textures: *mut *mut Texture,
 
     /// The number of light sources in the scene. Light sources
     /// are fully optional, in most cases this attribute will be 0
@@ -203,7 +200,7 @@ pub struct RawScene {
     ///
     /// All light sources imported from the given file are listed here.  Light
     /// sources are fully optional, in most cases this array will contain 0.
-    pub lights: *mut*mut Light,
+    pub lights: *mut *mut Light,
 
     /// The number of cameras in the scene. Cameras
     /// are fully optional, in most cases this attribute will be 0
@@ -215,7 +212,7 @@ pub struct RawScene {
     /// The array is mNumCameras in size. The first camera in the
     /// array (if existing) is the default camera view into
     /// the scene.
-    pub cameras: *mut*mut Camera,
+    pub cameras: *mut *mut Camera,
 
     /// Internal data, do not touch
     pub private: *mut c_void,
@@ -285,17 +282,19 @@ impl<'a> Scene<'a> {
     /// special flags have been set).  Presence of further nodes depends on
     /// the format and content of the imported file.
     pub fn get_root_node(&self) -> &Node {
-        unsafe {
-            &*(self.raw_scene.root_node)
-        }
+        unsafe { &*(self.raw_scene.root_node) }
     }
 
     /// Get the array of animations.
     ///
     /// All animations imported from the given file are listed here.
     pub fn get_animations(&self) -> &[&Animation] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.animations,
-                                  self.raw_scene.num_animations as usize) }
+        unsafe {
+            ptr_ptr_to_slice(
+                self.raw_scene.animations,
+                self.raw_scene.num_animations as usize,
+            )
+        }
     }
 
     /// Get the array of meshes.
@@ -304,16 +303,14 @@ impl<'a> Scene<'a> {
     /// this array. If the `SceneFlags::Incomplete` flag is not set there
     /// will always be at least one mesh.
     pub fn get_meshes(&self) -> &[&Mesh] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.meshes,
-                                  self.raw_scene.num_meshes as usize) }
+        unsafe { ptr_ptr_to_slice(self.raw_scene.meshes, self.raw_scene.num_meshes as usize) }
     }
 
     /// Get the array of light sources.
     ///
     /// All light sources imported from the given file are listed here.
     pub fn get_lights(&self) -> &[&Light] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.lights,
-                                  self.raw_scene.num_lights as usize) }
+        unsafe { ptr_ptr_to_slice(self.raw_scene.lights, self.raw_scene.num_lights as usize) }
     }
 
     /// Get the array of cameras.
@@ -322,8 +319,7 @@ impl<'a> Scene<'a> {
     /// The first camera in the array (if existing) is the default camera view
     /// into the scene.
     pub fn get_cameras(&self) -> &[&Camera] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.cameras,
-                                  self.raw_scene.num_cameras as usize) }
+        unsafe { ptr_ptr_to_slice(self.raw_scene.cameras, self.raw_scene.num_cameras as usize) }
     }
 
     /// Get the array of materials.
@@ -332,8 +328,12 @@ impl<'a> Scene<'a> {
     /// array. If the `SceneFlags::Incomplete` flag is not set there will
     /// always be at least ONE material.
     pub fn get_materials(&self) -> &[&Material] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.materials,
-                                  self.raw_scene.num_materials as usize) }
+        unsafe {
+            ptr_ptr_to_slice(
+                self.raw_scene.materials,
+                self.raw_scene.num_materials as usize,
+            )
+        }
     }
 
     /// Get the array of embedded textures.
@@ -342,8 +342,12 @@ impl<'a> Scene<'a> {
     /// An example is Quake's MDL format (which is also used by
     /// some GameStudio versions)
     pub fn get_textures(&self) -> &[&Texture] {
-        unsafe { ptr_ptr_to_slice(self.raw_scene.textures,
-                                  self.raw_scene.num_textures as usize) }
+        unsafe {
+            ptr_ptr_to_slice(
+                self.raw_scene.textures,
+                self.raw_scene.num_textures as usize,
+            )
+        }
     }
 
     /// Get the amount of memory used to store this scene.
@@ -367,13 +371,10 @@ impl<'a> Scene<'a> {
     ///
     /// This process can fail if using `Process::ValidateDS` in which case an
     /// error is returned and further usage of the scene is invalid.
-    pub fn apply_postprocessing(&mut self,
-                                steps: &[Process])
-                                -> Result<(), &str> {
+    pub fn apply_postprocessing(&mut self, steps: &[Process]) -> Result<(), &str> {
         unsafe {
             let flags = steps.iter().fold(0, |x, &y| x | y as u32);
-            let scene = ffi::aiApplyPostProcessing(self.raw_scene,
-                                                   flags);
+            let scene = ffi::aiApplyPostProcessing(self.raw_scene, flags);
             if scene.is_null() {
                 //TODO: invalidate the scene
                 Err("Post processing failed")
@@ -386,19 +387,22 @@ impl<'a> Scene<'a> {
 
 impl<'a> fmt::Display for Scene<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Scene {{ \
+        write!(
+            f,
+            "Scene {{ \
         num_meshes: {}, \
         num_materials: {}, \
         num_animations: {}, \
         num_textures: {}, \
         num_lights: {}, \
         num_cameras: {} }}",
-        self.num_meshes,
-        self.num_materials,
-        self.num_animations,
-        self.num_textures,
-        self.num_lights,
-        self.num_cameras,)
+            self.num_meshes,
+            self.num_materials,
+            self.num_animations,
+            self.num_textures,
+            self.num_lights,
+            self.num_cameras,
+        )
     }
 }
 
@@ -410,7 +414,6 @@ impl<'a> Drop for Scene<'a> {
         unsafe { ffi::aiReleaseImport(mem::transmute(self.raw_scene)) }
     }
 }
-
 
 // impl<'a> Clone for Scene<'a> {
 //     fn clone(&self) -> Scene<'a> {

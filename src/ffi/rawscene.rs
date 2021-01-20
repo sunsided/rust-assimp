@@ -1,19 +1,19 @@
 //! RawScene function returned by c api functions.
 use libc::{c_uint, c_void};
 
-use raw::scene::Node;
 use raw::animation::Animation;
 use raw::camera::Camera;
 use raw::light::Light;
 use raw::material::Material;
 use raw::mesh::Mesh;
+use raw::scene::Node;
 use raw::texture::Texture;
-use types::{Matrix4x4, AiString, MemoryInfo};
+use types::{AiString, Matrix4x4, MemoryInfo};
 
 /// Objects of this class are generally maintained and owned by Assimp, not
 /// by the caller. You shouldn't want to instance it, nor should you ever try to
 /// delete a given scene on your own.
-#[repr(C)]
+
 pub struct RawScene {
     /// Any combination of the AI_SCENE_FLAGS_XXX flags.
     ///
@@ -38,7 +38,7 @@ pub struct RawScene {
     /// this array. The array is mNumMeshes in size. If the
     /// AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     /// be at least ONE material.
-    pub meshes: *mut*mut Mesh,
+    pub meshes: *mut *mut Mesh,
 
     /// The number of materials in the scene.
     pub num_materials: c_uint,
@@ -49,7 +49,7 @@ pub struct RawScene {
     /// array. The array is mNumMaterials in size. If the
     /// AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     /// be at least ONE material.
-    pub materials: *mut*mut Material,
+    pub materials: *mut *mut Material,
 
     /// The number of animations in the scene.
     pub num_animations: c_uint,
@@ -58,7 +58,7 @@ pub struct RawScene {
     ///
     /// All animations imported from the given file are listed here.
     /// The array is mNumAnimations in size.
-    pub animations: *mut*mut Animation,
+    pub animations: *mut *mut Animation,
 
     /// The number of textures embedded into the file
     pub num_textures: c_uint,
@@ -68,7 +68,7 @@ pub struct RawScene {
     /// Not many file formats embed their textures into the file.
     /// An example is Quake's MDL format (which is also used by
     /// some GameStudio versions)
-    pub textures: *mut*mut Texture,
+    pub textures: *mut *mut Texture,
 
     /// The number of light sources in the scene. Light sources
     /// are fully optional, in most cases this attribute will be 0
@@ -78,7 +78,7 @@ pub struct RawScene {
     ///
     /// All light sources imported from the given file are listed here.  Light
     /// sources are fully optional, in most cases this array will contain 0.
-    pub lights: *mut*mut Light,
+    pub lights: *mut *mut Light,
 
     /// The number of cameras in the scene. Cameras
     /// are fully optional, in most cases this attribute will be 0
@@ -90,7 +90,7 @@ pub struct RawScene {
     /// The array is mNumCameras in size. The first camera in the
     /// array (if existing) is the default camera view into
     /// the scene.
-    pub cameras: *mut*mut Camera,
+    pub cameras: *mut *mut Camera,
 
     /// Internal data, do not touch
     pub private: *mut c_void,

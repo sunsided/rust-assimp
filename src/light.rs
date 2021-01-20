@@ -1,11 +1,11 @@
 //! Defines the Light data structure
 
-use types::{Vector3D, Color3D, AiString};
-use libc::{c_float};
+use crate::{AiString, Color3D, Vector3D};
+use libc::c_float;
 
 /// Enumerates all supported types of light sources.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum LightType {
     /// An undefined light, not a valid value
     // TODO handle this in a rust way?
@@ -46,7 +46,7 @@ pub enum LightType {
 /// then, the transformation tracks of the main node make the
 /// spot light already point in the right direction.
 #[derive(Copy, Clone, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct Light {
     /// The name of the light source.
     ///

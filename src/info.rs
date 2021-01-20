@@ -1,16 +1,15 @@
 //! Defines functions to retrieve information about the version of assimp being used.
 
-
-use types::AiBool::{AiTrue};
-use types::AiString;
-use ffi;
+use crate::ffi;
+use crate::types::AiBool::AiTrue;
+use crate::AiString;
+use std::ffi::CStr;
 use std::ffi::CString;
 use std::str::from_utf8;
-use std::ffi::CStr;
 
 /// Flags for checking how assimp was compiled
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C, u32)]
+#[repr(C)]
 pub enum CompileFlags {
     /// Assimp was compiled as a shared object (Windows: DLL)
     Shared = 0x1,
@@ -35,7 +34,7 @@ pub enum CompileFlags {
 
 // /// Mixed set of flags for #aiImporterDesc, indicating some features
 // /// common to many importers*/
-// #[repr(C)]
+//
 // pub enum ImporterFlags {
 //     /// Indicates that there is a textual encoding of the
 //     /// file format; and that it is supported.
@@ -72,7 +71,7 @@ pub enum CompileFlags {
 // /// formats. Building such an UI by hand means a lot of maintenance as
 // /// importers/exporters are added to Assimp, so it might be useful to have a
 // /// common mechanism to query some rough importer characteristics.
-// #[repr(C)]
+//
 // pub struct ImporterDesc {
 //     /// Full name of the importer (i.e. Blender3D importer)
 //     const char* mName;
@@ -92,15 +91,15 @@ pub enum CompileFlags {
 //     unsigned int mFlags;
 
 //     /// Minimum format version that can be loaded im major.minor format,
-//     /// both are set to 0 if there is either no version scheme 
+//     /// both are set to 0 if there is either no version scheme
 //     /// or if the loader doesn't care.
 //     unsigned int mMinMajor;
 //     unsigned int mMinMinor;
 
 //     /// Maximum format version that can be loaded im major.minor format,
-//     /// both are set to 0 if there is either no version scheme 
+//     /// both are set to 0 if there is either no version scheme
 //     /// or if the loader doesn't care. Loaders that expect to be
-//     /// forward-compatible to potential future format versions should 
+//     /// forward-compatible to potential future format versions should
 //     /// indicate  zero, otherwise they should specify the current
 //     /// maximum version.
 //     unsigned int mMaxMajor;
@@ -124,15 +123,9 @@ pub enum CompileFlags {
 
 /// Get the version number of assimp as a tuple `(major, minor, revision)`
 pub fn get_version() -> (usize, usize, usize) {
-    let major = unsafe {
-        ffi::aiGetVersionMajor() as usize
-    };
-    let minor = unsafe {
-        ffi::aiGetVersionMinor() as usize
-    };
-    let rev = unsafe {
-        ffi::aiGetVersionRevision() as usize
-    };
+    let major = unsafe { ffi::aiGetVersionMajor() as usize };
+    let minor = unsafe { ffi::aiGetVersionMinor() as usize };
+    let rev = unsafe { ffi::aiGetVersionRevision() as usize };
     (major, minor, rev)
 }
 
@@ -167,7 +160,7 @@ pub fn get_compile_flags() -> u32 {
 
 /// Check if a given compile flag is set
 pub fn is_flag_set(flag: CompileFlags) -> bool {
-    unsafe { ( ffi::aiGetCompileFlags() & flag as u32 ) != 0 }
+    unsafe { (ffi::aiGetCompileFlags() & flag as u32) != 0 }
 }
 
 /// Returns whether a given file extension is supported by assimp
@@ -186,7 +179,7 @@ pub fn is_ext_supported(ext: &str) -> bool {
 
 #[cfg(test)]
 mod test {
-    use info;
+    use crate::info;
 
     #[test]
     fn test_version() {

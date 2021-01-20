@@ -5,12 +5,11 @@
 // use std::c_str::ToCStr;
 use std::ptr;
 
-use types::AiBool;
-use ffi;
-
-pub use log::LogStream::{Stdout, Stderr, Debugger, File, Custom};
-use std::old_io::Writer;
+use crate::ffi;
+pub use crate::log::LogStream::{Custom, Debugger, File, Stderr, Stdout};
+use crate::types::AiBool;
 use std::ffi::CString;
+use std::old_io::Writer;
 
 /// Default logging options for assimp
 pub enum LogStream<'a> {
@@ -24,7 +23,7 @@ pub enum LogStream<'a> {
     /// Log to the given file
     File(&'a str),
     /// Log to the given writer
-    Custom(&'a mut (Writer+'a))
+    Custom(&'a mut (dyn Writer + 'a)),
 }
 
 // TODO//{{{
@@ -57,9 +56,7 @@ pub enum LogStream<'a> {
 
 /// Enable/Disable verbose logging for all log streams
 pub fn enable_verbose_logging(choice: bool) {
-    unsafe {
-        ffi::aiEnableVerboseLogging(AiBool::new(choice))
-    }
+    unsafe { ffi::aiEnableVerboseLogging(AiBool::new(choice)) }
 }
 
 /// Attach a log stream to assimp. Multiple log streams may be attach
@@ -68,15 +65,15 @@ pub fn add_log_stream(log_type: LogStream) {
     unsafe {
         let null = ptr::null();
         let log = match log_type {
-            File(fname) => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, CString::new(fname).unwrap().as_ptr()),
+            File(fname) => ffi::aiGetPredefinedLogStream(
+                ffi::DefaultLogStream_FILE,
+                CString::new(fname).unwrap().as_ptr(),
+            ),
             //File(fname) => fname.with_c_str(|s|
-                //ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, s) ),
-            Stdout =>
-                ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_STDOUT, null),
-            Stderr =>
-                ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_STDERR, null),
-            Debugger =>
-                ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_DEBUGGER, null),
+            //ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_FILE, s) ),
+            Stdout => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_STDOUT, null),
+            Stderr => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_STDERR, null),
+            Debugger => ffi::aiGetPredefinedLogStream(ffi::DefaultLogStream_DEBUGGER, null),
             Custom(_writer) => {
                 // writer.write_be_u32(0u32);
                 // ffi::LogStream {

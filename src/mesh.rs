@@ -1,30 +1,29 @@
 //! Declares the data structures used for imported geometry.
 
-use libc::{c_uint, c_float};
+use libc::{c_float, c_uint};
 use std::fmt;
 
-use types::{Vector3D, Color4D, Matrix4x4, AiString};
-use util::{ptr_ptr_to_slice, ptr_to_slice};
-
-use mesh::PrimitiveType::{Point, Line, Triangle, Polygon};
-
-/// Maximum number of indices per face (polygon).
-pub const MAX_FACE_INDICES : usize = 0x7fff;
+use crate::mesh::PrimitiveType::{Line, Point, Polygon, Triangle};
+use crate::util::{ptr_ptr_to_slice, ptr_to_slice};
+use crate::{AiString, Color4D, Matrix4x4, Vector3D};
 
 /// Maximum number of indices per face (polygon).
-pub const MAX_BONE_WEIGHTS : usize = 0x7fffffff;
+pub const MAX_FACE_INDICES: usize = 0x7fff;
+
+/// Maximum number of indices per face (polygon).
+pub const MAX_BONE_WEIGHTS: usize = 0x7fffffff;
 
 /// Maximum number of vertices per mesh.
-pub const MAX_VERTICES : usize = 0x7fffffff;
+pub const MAX_VERTICES: usize = 0x7fffffff;
 
 /// Maximum number of faces per mesh.
-pub const MAX_FACES : usize = 0x7fffffff;
+pub const MAX_FACES: usize = 0x7fffffff;
 
 /// Supported number of vertex color sets per mesh.
-pub const MAX_NUMBER_OF_COLOR_SETS : usize = 0x8;
+pub const MAX_NUMBER_OF_COLOR_SETS: usize = 0x8;
 
 /// Supported number of texture coord sets (uv[w] channels) per mesh
-pub const MAX_NUMBER_OF_TEXTURECOORDS : usize = 0x8;
+pub const MAX_NUMBER_OF_TEXTURECOORDS: usize = 0x8;
 
 /// A single face in a mesh, referring to multiple vertices.
 ///
@@ -42,7 +41,7 @@ pub const MAX_NUMBER_OF_TEXTURECOORDS : usize = 0x8;
 /// ` PrimitiveType_LINE | PrimitiveType_POINT `
 /// Together with the `Process_Triangulate` flag you can then be sure that
 /// Face::num_indices is always 3.
-#[repr(C)]
+
 pub struct Face {
     /// Number of indices defining this face.
     ///
@@ -62,7 +61,7 @@ impl Face {
 
 /// A single influence of a bone on a vertex.
 #[derive(Copy, Clone, PartialEq, Debug)]
-#[repr(C)]
+
 pub struct VertexWeight {
     /// Index of the vertex which is influenced by the bone.
     pub vertex_id: c_uint,
@@ -78,7 +77,7 @@ pub struct VertexWeight {
 /// A bone has a name by which it can be found in the frame hierarchy and by
 /// which it can be addressed by animations. In addition it has a number of
 /// influences on vertices.
-#[repr(C)]
+
 pub struct Bone {
     /// The name of the bone.
     pub name: AiString,
@@ -105,7 +104,7 @@ impl Bone {
 /// Enumerates the types of geometric primitives supported by Assimp.
 #[allow(unused_qualifications)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum PrimitiveType {
     /// A point primitive.
     Point = 0x1,
@@ -142,7 +141,7 @@ impl PrimitiveType {
 /// relationship between the time line and anim meshes is established by
 /// MeshAnim, which references singular mesh attachments by their ID and binds
 /// them to a time offset.
-#[repr(C)]
+
 pub struct AnimMesh {
     /// Replacement for Mesh vertices.
     ///
@@ -222,7 +221,9 @@ impl AnimMesh {
         let mut list = Vec::with_capacity(MAX_NUMBER_OF_COLOR_SETS);
 
         for colors in self.colors.iter() {
-            if colors.is_null() { break; }
+            if colors.is_null() {
+                break;
+            }
             unsafe {
                 list.push(ptr_to_slice(*colors, self.num_vertices as usize));
             }
@@ -240,7 +241,9 @@ impl AnimMesh {
         let mut list = Vec::with_capacity(MAX_NUMBER_OF_TEXTURECOORDS);
 
         for tex_coords in self.texture_coords.iter() {
-            if tex_coords.is_null() { break; }
+            if tex_coords.is_null() {
+                break;
+            }
             unsafe {
                 list.push(ptr_to_slice(*tex_coords, self.num_vertices as usize));
             }
@@ -266,7 +269,7 @@ impl AnimMesh {
 /// Note: The positions field is usually not optional. However, vertex
 /// positions *could* be missing if the `SceneFlags::Incomplete` flag is set
 /// in `Scene::flags`.
-#[repr(C)]
+
 pub struct Mesh {
     /// Bitwise combination of the members of the PrimitiveType enum.
     ///
@@ -340,7 +343,7 @@ pub struct Mesh {
     ///
     /// Note: If the mesh contains tangents, it automatically also contains
     /// bitangents.
-    bitangents : *mut Vector3D,
+    bitangents: *mut Vector3D,
 
     /// Vertex color sets.
     ///
@@ -382,7 +385,7 @@ pub struct Mesh {
     ///
     /// A bone consists of a name by which it can be found in the
     /// frame hierarchy and a set of vertex weights.
-    bones: *mut*mut Bone,
+    bones: *mut *mut Bone,
 
     /// The material used by this mesh.
     ///
@@ -414,7 +417,7 @@ pub struct Mesh {
     /// NOT CURRENTLY IN USE. Attachment meshes for this mesh, for vertex-based animation.
     /// Attachment meshes carry replacement data for some of the mesh'es
     /// vertex components (usually positions, normals).
-    anim_meshes: *mut*mut AnimMesh,
+    anim_meshes: *mut *mut AnimMesh,
 }
 
 impl Mesh {
@@ -507,7 +510,9 @@ impl Mesh {
         let mut list = Vec::with_capacity(MAX_NUMBER_OF_COLOR_SETS);
 
         for colors in self.colors.iter() {
-            if colors.is_null() { break; }
+            if colors.is_null() {
+                break;
+            }
             unsafe {
                 list.push(ptr_to_slice(*colors, self.num_vertices as usize));
             }
@@ -524,7 +529,9 @@ impl Mesh {
         let mut list = Vec::with_capacity(MAX_NUMBER_OF_COLOR_SETS);
 
         for tex_coords in self.texture_coords.iter() {
-            if tex_coords.is_null() { break; }
+            if tex_coords.is_null() {
+                break;
+            }
             unsafe {
                 list.push(ptr_to_slice(*tex_coords, self.num_vertices as usize));
             }
@@ -554,18 +561,26 @@ impl Mesh {
 
 impl fmt::Display for Mesh {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        try!(write!(f, "Mesh {{ name: {}, primitive_types:", self.name,));
+        write!(f, "Mesh {{ name: {}, primitive_types:", self.name,).unwrap();
 
-        if self.has_primitive(Point) { try!(write!(f, " Point")) }
-        if self.has_primitive(Line) { try!(write!(f, " Line")) }
-        if self.has_primitive(Triangle) { try!(write!(f, " Triangle")) }
-        if self.has_primitive(Polygon) { try!(write!(f, " Polygon")) }
+        if self.has_primitive(Point) {
+            write!(f, " Point").unwrap()
+        }
+        if self.has_primitive(Line) {
+            write!(f, " Line").unwrap()
+        }
+        if self.has_primitive(Triangle) {
+            write!(f, " Triangle").unwrap()
+        }
+        if self.has_primitive(Polygon) {
+            write!(f, " Polygon").unwrap()
+        }
 
-        write!(f, ", num_vertices: {}, num_faces: {}, num_bones: {}, material_index: {} }}",
-        self.num_vertices,
-        self.num_faces,
-        self.num_bones,
-        self.material_index)
+        write!(
+            f,
+            ", num_vertices: {}, num_faces: {}, num_bones: {}, material_index: {} }}",
+            self.num_vertices, self.num_faces, self.num_bones, self.material_index
+        )
     }
 }
 

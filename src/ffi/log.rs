@@ -1,17 +1,18 @@
 //! Data types used in the assimp C api for logging
-use libc::{c_char};
+use libc::c_char;
 
-use types::{AiBool};
+use crate::types::AiBool;
 
 /// Callback function used for custom log stream
-pub type LogStreamCallback = extern fn (*const c_char /* msg */, *mut c_char /* user */);
+pub type LogStreamCallback =
+    extern "C" fn(*const c_char /* msg */, *mut c_char /* user */);
 
 /// Enumerates predefined log streaming destinations.
 ///
 /// Logging to these streams can be enabled with a single call to
 ///  #LogStream::createDefaultStream or #aiAttachPredefinedLogStream(),
 ///  respectively.
-#[repr(C)]
+
 pub enum DefaultLogStream {
     /// Stream the log to a file
     DefaultLogStream_FILE = 0x1,
@@ -29,7 +30,7 @@ pub enum DefaultLogStream {
 
 /// C-API: Represents a log stream. A log stream receives all log messages and
 /// streams them _somewhere_.
-#[repr(C)]
+
 pub struct LogStream {
     /// callback to be called
     pub callback: LogStreamCallback,
@@ -38,7 +39,7 @@ pub struct LogStream {
     pub user: *mut c_char,
 }
 
-extern {
+extern "C" {
     /// Enable verbose logging.
     ///
     /// Verbose logging includes debug-related stuff
@@ -75,9 +76,7 @@ extern {
     // ASSIMP_API C_STRUCT aiLogStream aiGetPredefinedLogStream(
     //     C_ENUM aiDefaultLogStream pStreams,
     //     const char* file);
-    pub fn aiGetPredefinedLogStream(stream: DefaultLogStream,
-                                file: *const c_char)
-                                -> LogStream;
+    pub fn aiGetPredefinedLogStream(stream: DefaultLogStream, file: *const c_char) -> LogStream;
 
     /// Attach a custom log stream to the libraries' logging system.
     ///

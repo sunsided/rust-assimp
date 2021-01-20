@@ -1,22 +1,21 @@
 //! Defines basic data types and primitives used by assimp.
 
-use std::str;
+use libc::{c_float, c_uchar, c_uint, size_t};
 use std::fmt;
-use libc::{c_float, size_t, c_uchar, c_uint};
-use std::num::Float;
 use std::ops::{Add, Div, Mul, Sub};
+use std::str;
 
 use vecmath as m;
 
-use ffi;
+use crate::ffi;
 
 /// Maximum dimension for strings, ASSIMP strings are zero terminated.
-const MAXLEN : usize = 1024;
+const MAXLEN: usize = 1024;
 
 /// Boolean type used by assimp.
 #[doc(hidden)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum AiBool {
     /// Represents false
     AiFalse = 0x0,
@@ -36,7 +35,7 @@ impl AiBool {
 
 ///	Standard return type for some library functions.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub enum Return {
     /// Indicates that a function was successful
     Success = 0x0,
@@ -106,7 +105,7 @@ pub struct Color4D {
 ///
 /// All sizes are in bytes. Returned by Scene::get_memory_info()
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-#[repr(C)]
+
 pub struct MemoryInfo {
     /// Storage allocated for texture data
     pub textures: c_uint,
@@ -178,8 +177,7 @@ impl AiString {
 
     /// Get a `String` representation of this `AiString`
     pub fn into_string(&self) -> Option<String> {
-        match String::from_utf8((self.data)
-                                .to_vec()) {
+        match String::from_utf8((self.data).to_vec()) {
             Err(_) => None,
             Ok(s) => Some(s),
         }
@@ -192,7 +190,7 @@ impl fmt::Debug for AiString {
             Ok(s) => write!(f, "{}", s),
             //Ok(s) => s.fmt(f),
             //_    => "".fmt(f),
-            _    => write!(f, "{}", ""),
+            _ => write!(f, "{}", ""),
         }
     }
 }
@@ -200,15 +198,15 @@ impl fmt::Debug for AiString {
 impl PartialEq for AiString {
     fn eq(&self, other: &AiString) -> bool {
         if self.length != other.length {
-            return false
+            return false;
         }
 
-        for i in 0 .. self.length as usize {
+        for i in 0..self.length as usize {
             if self.data[i] != other.data[i] {
-                return false
+                return false;
             }
         }
-        return true
+        return true;
     }
 }
 
@@ -225,7 +223,7 @@ impl fmt::Display for AiString {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.as_str() {
             Ok(s) => write!(f, "{}", s),
-            _   => write!(f, "{}", ""),
+            _ => write!(f, "{}", ""),
         }
     }
 }
@@ -249,8 +247,7 @@ impl Vector2D {
     /// Dot product
     #[inline(always)]
     pub fn dot(&self, other: &Vector2D) -> f32 {
-        self.x * other.x +
-        self.y * other.y
+        self.x * other.x + self.y * other.y
     }
 
     /// Calculate the norm of the vector
@@ -348,29 +345,51 @@ impl Vector3D {
     /// Create a translation matrix from this vector
     pub fn translation_matrix(&self) -> Matrix4x4 {
         Matrix4x4 {
-            a1: 1.0, a2: 0.0, a3: 0.0, a4: self.x,
-            b1: 0.0, b2: 1.0, b3: 0.0, b4: self.y,
-            c1: 0.0, c2: 0.0, c3: 1.0, c4: self.z,
-            d1: 0.0, d2: 0.0, d3: 0.0, d4: 1.0,
+            a1: 1.0,
+            a2: 0.0,
+            a3: 0.0,
+            a4: self.x,
+            b1: 0.0,
+            b2: 1.0,
+            b3: 0.0,
+            b4: self.y,
+            c1: 0.0,
+            c2: 0.0,
+            c3: 1.0,
+            c4: self.z,
+            d1: 0.0,
+            d2: 0.0,
+            d3: 0.0,
+            d4: 1.0,
         }
     }
 
     /// Create a scaling matrix from this vector
     pub fn scaling_matrix(&self) -> Matrix4x4 {
         Matrix4x4 {
-            a1: self.x, a2: 0.0,    a3: 0.0,    a4: 0.0,
-            b1: 0.0,    b2: self.y, b3: 0.0,    b4: 0.0,
-            c1: 0.0,    c2: 0.0,    c3: self.z, c4: 0.0,
-            d1: 0.0,    d2: 0.0,    d3: 0.0,    d4: 1.0,
+            a1: self.x,
+            a2: 0.0,
+            a3: 0.0,
+            a4: 0.0,
+            b1: 0.0,
+            b2: self.y,
+            b3: 0.0,
+            b4: 0.0,
+            c1: 0.0,
+            c2: 0.0,
+            c3: self.z,
+            c4: 0.0,
+            d1: 0.0,
+            d2: 0.0,
+            d3: 0.0,
+            d4: 1.0,
         }
     }
 
     /// Dot product
     #[inline(always)]
     pub fn dot(&self, other: &Vector3D) -> f32 {
-        self.x * other.x +
-        self.y * other.y +
-        self.z * other.z
+        self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     /// Calculate the norm of the vector
@@ -394,7 +413,7 @@ impl Vector3D {
 
 impl Add for Vector3D {
     type Output = Vector3D;
-    
+
     fn add(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self.x + rhs.x,
@@ -406,7 +425,7 @@ impl Add for Vector3D {
 
 impl Sub for Vector3D {
     type Output = Vector3D;
-    
+
     fn sub(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self.x - rhs.x,
@@ -418,7 +437,7 @@ impl Sub for Vector3D {
 
 impl Mul<f32> for Vector3D {
     type Output = Vector3D;
-    
+
     fn mul(self, rhs: f32) -> Vector3D {
         Vector3D {
             x: self.x * rhs,
@@ -430,7 +449,7 @@ impl Mul<f32> for Vector3D {
 
 impl Mul<Vector3D> for f32 {
     type Output = Vector3D;
-    
+
     fn mul(self, rhs: Vector3D) -> Vector3D {
         Vector3D {
             x: self * rhs.x,
@@ -442,7 +461,7 @@ impl Mul<Vector3D> for f32 {
 
 impl Div<f32> for Vector3D {
     type Output = Vector3D;
-    
+
     fn div(self, rhs: f32) -> Vector3D {
         Vector3D {
             x: self.x / rhs,
@@ -465,7 +484,12 @@ pub struct Quaternion {
 
 impl Quaternion {
     fn zero() -> Quaternion {
-        Quaternion { w: 0.0, x: 0.0, y: 0.0, z: 0.0 }
+        Quaternion {
+            w: 0.0,
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
     }
 }
 
@@ -487,30 +511,41 @@ impl Quaternion {
     /// Create a rotation matrix from this quaternion
     pub fn rotation_matrix(&self) -> Matrix4x4 {
         let norm = self.dot(self);
-        let s = if norm < 1e-6 {
-            0.0
-        } else {
-            2.0 / norm
-        };
+        let s = if norm < 1e-6 { 0.0 } else { 2.0 / norm };
         let (w, x, y, z) = (self.w, self.x, self.y, self.z);
-        let wx = s*w*x; let wy = s*w*y; let wz = s*w*z;
-        let xx = s*x*x; let xy = s*x*y; let xz = s*x*z;
-        let yy = s*y*y; let yz = s*y*z; let zz = s*z*z;
+        let wx = s * w * x;
+        let wy = s * w * y;
+        let wz = s * w * z;
+        let xx = s * x * x;
+        let xy = s * x * y;
+        let xz = s * x * z;
+        let yy = s * y * y;
+        let yz = s * y * z;
+        let zz = s * z * z;
         Matrix4x4 {
-            a1:  1. - (yy + zz), a2:      (xy - wz), a3:      (xz + wy), a4: 0.0,
-            b1:       (xy + wz), b2: 1. - (xx + zz), b3:      (yz - wx), b4: 0.0,
-            c1:       (xz - wy), c2:      (yz + wx), c3: 1. - (xx + yy), c4: 0.0,
-            d1:             0.0, d2:            0.0, d3:            0.0, d4: 1.0,
+            a1: 1. - (yy + zz),
+            a2: (xy - wz),
+            a3: (xz + wy),
+            a4: 0.0,
+            b1: (xy + wz),
+            b2: 1. - (xx + zz),
+            b3: (yz - wx),
+            b4: 0.0,
+            c1: (xz - wy),
+            c2: (yz + wx),
+            c3: 1. - (xx + yy),
+            c4: 0.0,
+            d1: 0.0,
+            d2: 0.0,
+            d3: 0.0,
+            d4: 1.0,
         }
     }
 
     /// Dot product
     #[inline(always)]
     pub fn dot(&self, other: &Quaternion) -> f32 {
-        self.w * other.w +
-        self.x * other.x +
-        self.y * other.y +
-        self.z * other.z
+        self.w * other.w + self.x * other.x + self.y * other.y + self.z * other.z
     }
 
     /// Calculate the norm of the quaternion
@@ -534,7 +569,7 @@ impl Quaternion {
 
 impl Add for Quaternion {
     type Output = Quaternion;
-    
+
     fn add(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self.w + rhs.w,
@@ -547,7 +582,7 @@ impl Add for Quaternion {
 
 impl Sub for Quaternion {
     type Output = Quaternion;
-    
+
     fn sub(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self.w - rhs.w,
@@ -560,7 +595,7 @@ impl Sub for Quaternion {
 
 impl Mul<f32> for Quaternion {
     type Output = Quaternion;
-    
+
     fn mul(self, rhs: f32) -> Quaternion {
         Quaternion {
             w: self.w * rhs,
@@ -573,7 +608,7 @@ impl Mul<f32> for Quaternion {
 
 impl Mul<Quaternion> for f32 {
     type Output = Quaternion;
-    
+
     fn mul(self, rhs: Quaternion) -> Quaternion {
         Quaternion {
             w: self * rhs.w,
@@ -586,7 +621,7 @@ impl Mul<Quaternion> for f32 {
 
 impl Div<f32> for Quaternion {
     type Output = Quaternion;
-    
+
     fn div(self, rhs: f32) -> Quaternion {
         Quaternion {
             w: self.w / rhs,
@@ -602,54 +637,67 @@ impl Div<f32> for Quaternion {
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Matrix3x3 {
-    pub a1: c_float, pub a2: c_float, pub a3: c_float,
-    pub b1: c_float, pub b2: c_float, pub b3: c_float,
-    pub c1: c_float, pub c2: c_float, pub c3: c_float,
+    pub a1: c_float,
+    pub a2: c_float,
+    pub a3: c_float,
+    pub b1: c_float,
+    pub b2: c_float,
+    pub b3: c_float,
+    pub c1: c_float,
+    pub c2: c_float,
+    pub c3: c_float,
 }
 
 impl Matrix3x3 {
     /// Create a 3x3 identity matrix
     pub fn identity() -> Matrix3x3 {
         Matrix3x3 {
-            a1:  1.0, a2: 0.0, a3: 0.0,
-            b1:  0.0, b2: 1.0, b3: 0.0,
-            c1:  0.0, c2: 0.0, c3: 1.0,
+            a1: 1.0,
+            a2: 0.0,
+            a3: 0.0,
+            b1: 0.0,
+            b2: 1.0,
+            b3: 0.0,
+            c1: 0.0,
+            c2: 0.0,
+            c3: 1.0,
         }
     }
 
     /// Compute the inverse of a 3x3 matrix
     pub fn inverse(self) -> Matrix3x3 {
         let inv = m::mat3_inv([
-                    [self.a1, self.a2, self.a3],
-                    [self.b1, self.b2, self.b3],
-                    [self.c1, self.c2, self.c3],
-                  ]);
+            [self.a1, self.a2, self.a3],
+            [self.b1, self.b2, self.b3],
+            [self.c1, self.c2, self.c3],
+        ]);
         Matrix3x3 {
-            a1:  inv[0][0], a2: inv[0][1], a3: inv[0][2],
-            b1:  inv[1][0], b2: inv[1][1], b3: inv[1][2],
-            c1:  inv[2][0], c2: inv[2][1], c3: inv[2][2],
+            a1: inv[0][0],
+            a2: inv[0][1],
+            a3: inv[0][2],
+            b1: inv[1][0],
+            b2: inv[1][1],
+            b3: inv[1][2],
+            c1: inv[2][0],
+            c2: inv[2][1],
+            c3: inv[2][2],
         }
     }
 
     /// Returns the transpose of this matrix
     pub fn transpose(&self) -> Matrix3x3 {
         let mut temp = self.clone();
-        unsafe {
-            ffi::aiTransposeMatrix3(&mut temp)
-        }
+        unsafe { ffi::aiTransposeMatrix3(&mut temp) }
         temp
     }
-
 }
 
 impl Mul for Matrix3x3 {
     type Output = Matrix3x3;
-    
+
     fn mul(self, rhs: Matrix3x3) -> Matrix3x3 {
         let mut result = self.clone();
-        unsafe {
-            ffi::aiMultiplyMatrix3(&mut result, &rhs)
-        }
+        unsafe { ffi::aiMultiplyMatrix3(&mut result, &rhs) }
         result
     }
 }
@@ -659,39 +707,61 @@ impl Mul for Matrix3x3 {
 #[derive(Copy, Clone, PartialEq, Debug)]
 #[repr(C, packed)]
 pub struct Matrix4x4 {
-    pub a1: c_float, pub a2: c_float, pub a3: c_float, pub a4: c_float,
-    pub b1: c_float, pub b2: c_float, pub b3: c_float, pub b4: c_float,
-    pub c1: c_float, pub c2: c_float, pub c3: c_float, pub c4: c_float,
-    pub d1: c_float, pub d2: c_float, pub d3: c_float, pub d4: c_float,
+    pub a1: c_float,
+    pub a2: c_float,
+    pub a3: c_float,
+    pub a4: c_float,
+    pub b1: c_float,
+    pub b2: c_float,
+    pub b3: c_float,
+    pub b4: c_float,
+    pub c1: c_float,
+    pub c2: c_float,
+    pub c3: c_float,
+    pub c4: c_float,
+    pub d1: c_float,
+    pub d2: c_float,
+    pub d3: c_float,
+    pub d4: c_float,
 }
 
 impl Matrix4x4 {
     /// Create a 4x4 identity matrix
     pub fn identity() -> Matrix4x4 {
         Matrix4x4 {
-            a1:  1.0, a2: 0.0, a3: 0.0, a4: 0.0,
-            b1:  0.0, b2: 1.0, b3: 0.0, b4: 0.0,
-            c1:  0.0, c2: 0.0, c3: 1.0, c4: 0.0,
-            d1:  0.0, d2: 0.0, d3: 0.0, d4: 1.0,
+            a1: 1.0,
+            a2: 0.0,
+            a3: 0.0,
+            a4: 0.0,
+            b1: 0.0,
+            b2: 1.0,
+            b3: 0.0,
+            b4: 0.0,
+            c1: 0.0,
+            c2: 0.0,
+            c3: 1.0,
+            c4: 0.0,
+            d1: 0.0,
+            d2: 0.0,
+            d3: 0.0,
+            d4: 1.0,
         }
     }
 
     /// Returns a slice equivalent to this matrix in row-major format
     pub fn to_array(&self) -> [[f32; 4]; 4] {
         [
-            [self.a1, self.a2, self.a3, self.a4,],
-            [self.b1, self.b2, self.b3, self.b4,],
-            [self.c1, self.c2, self.c3, self.c4,],
-            [self.d1, self.d2, self.d3, self.d4,],
+            [self.a1, self.a2, self.a3, self.a4],
+            [self.b1, self.b2, self.b3, self.b4],
+            [self.c1, self.c2, self.c3, self.c4],
+            [self.d1, self.d2, self.d3, self.d4],
         ]
     }
 
     /// Returns the transpose of this matrix
     pub fn transpose(&self) -> Matrix4x4 {
         let mut temp = self.clone();
-        unsafe {
-            ffi::aiTransposeMatrix4(&mut temp)
-        }
+        unsafe { ffi::aiTransposeMatrix4(&mut temp) }
         temp
     }
 
@@ -699,22 +769,32 @@ impl Matrix4x4 {
     pub fn inverse(&self) -> Matrix4x4 {
         let inv = m::mat4_inv(self.to_array());
         Matrix4x4 {
-            a1:  inv[0][0], a2: inv[0][1], a3: inv[0][2], a4: inv[0][3],
-            b1:  inv[1][0], b2: inv[1][1], b3: inv[1][2], b4: inv[1][3],
-            c1:  inv[2][0], c2: inv[2][1], c3: inv[2][2], c4: inv[2][3],
-            d1:  inv[3][0], d2: inv[3][1], d3: inv[3][2], d4: inv[3][3],
+            a1: inv[0][0],
+            a2: inv[0][1],
+            a3: inv[0][2],
+            a4: inv[0][3],
+            b1: inv[1][0],
+            b2: inv[1][1],
+            b3: inv[1][2],
+            b4: inv[1][3],
+            c1: inv[2][0],
+            c2: inv[2][1],
+            c3: inv[2][2],
+            c4: inv[2][3],
+            d1: inv[3][0],
+            d2: inv[3][1],
+            d3: inv[3][2],
+            d4: inv[3][3],
         }
     }
 }
 
 impl Mul for Matrix4x4 {
     type Output = Matrix4x4;
-    
+
     fn mul(self, rhs: Matrix4x4) -> Matrix4x4 {
         let mut result = self.clone();
-        unsafe {
-            ffi::aiMultiplyMatrix4(&mut result, &rhs)
-        }
+        unsafe { ffi::aiMultiplyMatrix4(&mut result, &rhs) }
         result
     }
 }
@@ -724,6 +804,6 @@ impl Mul for Matrix4x4 {
 //     use super::Matrix4x4;
 //     #[test]
 //     fn test_inv() {
-//         Matrix4x4::identity() * 
+//         Matrix4x4::identity() *
 //     }
 // }

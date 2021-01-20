@@ -1,32 +1,31 @@
 /// Defines generic C routines to access memory-mapped files
-
 use libc::{c_char, size_t};
 
-use types::{Return};
+use crate::types::Return;
 
 // AiFile callbacks
-type FileWriteProc = extern fn (*mut AiFile, *const char, size_t, size_t) -> size_t;
-type FileReadProc = extern fn (*mut AiFile, *const char, size_t, size_t) -> size_t;
-type FileTellProc = extern fn (*mut AiFile) -> size_t;
-type FileFlushProc = extern fn (*mut AiFile);
-type FileSeek = extern fn (*mut AiFile, size_t, Origin) -> Return;
+type FileWriteProc = extern "C" fn(*mut AiFile, *const char, size_t, size_t) -> size_t;
+type FileReadProc = extern "C" fn(*mut AiFile, *const char, size_t, size_t) -> size_t;
+type FileTellProc = extern "C" fn(*mut AiFile) -> size_t;
+type FileFlushProc = extern "C" fn(*mut AiFile);
+type FileSeek = extern "C" fn(*mut AiFile, size_t, Origin) -> Return;
 
 // AiFileIO callbacks
-type FileOpenProc = extern fn (*mut AiFileIO, *const c_char, *const c_char) -> *mut AiFile;
-type FileCloseProc = extern fn (*mut AiFileIO, *mut AiFile);
+type FileOpenProc = extern "C" fn(*mut AiFileIO, *const c_char, *const c_char) -> *mut AiFile;
+type FileCloseProc = extern "C" fn(*mut AiFileIO, *mut AiFile);
 
 /// Seek origins (for the virtual file system API).
 ///
-#[repr(C)]
+
 #[allow(dead_code)]
 pub enum Origin {
-    /// Beginning of the file 
+    /// Beginning of the file
     Origin_SET = 0x0,
 
-    /// Current position of the file pointer 
+    /// Current position of the file pointer
     Origin_CUR = 0x1,
 
-    /// End of the file, offsets must be negative 
+    /// End of the file, offsets must be negative
     Origin_END = 0x2,
 }
 
@@ -36,7 +35,7 @@ pub enum Origin {
 /// to the import function. If you don't, a default implementation is used.
 /// Use custom file systems to enable reading from other sources, such as ZIPs
 /// or memory locations.
-#[repr(C)]
+
 #[allow(dead_code)]
 pub struct AiFileIO {
     /// Function used to open a new file
@@ -58,7 +57,7 @@ pub struct AiFileIO {
 /// the CRT. However, you can supply a custom implementation to Assimp by
 /// delivering a custom aiFileIO. Use this to enable reading from other sources,
 /// such as ZIP archives or memory locations.
-#[repr(C)]
+
 pub struct AiFile {
     /// Callback to read from a file
     read: FileReadProc,

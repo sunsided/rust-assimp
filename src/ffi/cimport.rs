@@ -1,17 +1,17 @@
-use libc::{c_char, c_uint, c_float, c_int};
+use libc::{c_char, c_float, c_int, c_uint};
 
-use scene::RawScene;
-use types::{AiString, MemoryInfo};
-use fileio::{AiFileIO};
+use crate::fileio::AiFileIO;
+use crate::scene::RawScene;
+use crate::types::{AiString, MemoryInfo};
 
 /// Represents an opaque set of settings to be used during importing.
-#[repr(C)]
+
 pub struct PropertyStore {
     sentinel: c_char,
 }
 
 #[link(name = "assimp")]
-extern {
+extern "C" {
     ///  Reads the given file and returns its content.
     ///
     /// If the call succeeds, the imported data is returned in an aiScene
@@ -40,11 +40,12 @@ extern {
     //     unsigned int pFlags,
     //     C_STRUCT aiFileIO* pFS,
     //     const C_STRUCT aiPropertyStore* pProps);
-    pub fn aiImportFileExWithProperties(fname: *const c_char,
-                                        flags: c_uint,
-                                        fio  : *mut AiFileIO,
-                                        props: *const PropertyStore)
-                                        -> *const RawScene;
+    pub fn aiImportFileExWithProperties(
+        fname: *const c_char,
+        flags: c_uint,
+        fio: *mut AiFileIO,
+        props: *const PropertyStore,
+    ) -> *const RawScene;
 
     /// Returns the error text of the last failed import process.
     ///
@@ -53,7 +54,6 @@ extern {
     /// There can't be an error if you got a non-NULL aiScene from
     /// aiImportFile/aiImportFileEx/aiApplyPostProcessing.
     pub fn aiGetErrorString() -> *const c_char;
-
 
     /// Reads the given file from a given memory buffer,
     ///
@@ -88,22 +88,24 @@ extern {
     /// MD3, which outsource parts of their material stuff into external
     /// scripts. If you need the full functionality, provide a custom IOSystem
     /// to make Assimp find these files.
-    pub fn aiImportFileFromMemory(buf: *const c_char,
-                              len: c_uint,
-                              flags: c_uint,
-                              hint: *const c_char)
-                              ->  *const RawScene;
+    pub fn aiImportFileFromMemory(
+        buf: *const c_char,
+        len: c_uint,
+        flags: c_uint,
+        hint: *const c_char,
+    ) -> *const RawScene;
 
     /// Same as aiImportFileFromMemory, but adds an extra parameter
     /// containing importer settings.
     ///
     /// * props PropertyStore instance containing import settings.
-    pub fn aiImportFileFromMemoryWithProperties(buf: *const c_char,
-                                            len: c_uint,
-                                            flags: c_uint,
-                                            hint: *const c_char,
-                                            props: *const PropertyStore)
-                                            ->  *const RawScene;
+    pub fn aiImportFileFromMemoryWithProperties(
+        buf: *const c_char,
+        len: c_uint,
+        flags: c_uint,
+        hint: *const c_char,
+        props: *const PropertyStore,
+    ) -> *const RawScene;
 
     /// Apply post-processing to an already-imported scene.
     ///
@@ -125,9 +127,7 @@ extern {
     /// processing steps are not really designed to 'fail'. To be exact, the
     /// aiProcess_ValidateDS flag is currently the only post processing step
     /// which can actually cause the scene to be reset to NULL.
-    pub fn aiApplyPostProcessing(scene: *const RawScene,
-                             flags: c_uint)
-                             -> *const RawScene;
+    pub fn aiApplyPostProcessing(scene: *const RawScene, flags: c_uint) -> *const RawScene;
 
     /// Releases all resources associated with the given import process.
     ///
@@ -162,9 +162,7 @@ extern {
     /// * `name` Name of the configuration property to be set. All supported
     ///   public properties are defined in the config.h header file (AI_CONFIG_XXX).
     /// * `value` New value for the property
-    pub fn aiSetImportPropertyInteger(store: *mut PropertyStore,
-                                      name: *const c_char,
-                                      value: c_int);
+    pub fn aiSetImportPropertyInteger(store: *mut PropertyStore, name: *const c_char, value: c_int);
 
     /// Set a floating-point property.
     ///
@@ -176,9 +174,7 @@ extern {
     ///        public properties are defined in the config.h header file
     /// `value` New value for the property
     ///
-    pub fn aiSetImportPropertyFloat(store: *mut PropertyStore,
-                                    name: *const c_char,
-                                    value: c_float);
+    pub fn aiSetImportPropertyFloat(store: *mut PropertyStore, name: *const c_char, value: c_float);
 
     /// Set a string property.
     ///
@@ -193,9 +189,11 @@ extern {
     ///   (AI_CONFIG_XXX).
     /// * value New value for the property
     ///
-    pub fn aiSetImportPropertyString(store: *mut PropertyStore,
-                                     name: *const c_char,
-                                     st: *const AiString);
+    pub fn aiSetImportPropertyString(
+        store: *mut PropertyStore,
+        name: *const c_char,
+        st: *const AiString,
+    );
 }
 
 // /** Reads the given file using user-defined I/O functions and returns
